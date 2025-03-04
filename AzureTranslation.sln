@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.AppHost", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.ServiceDefaults", "src\AzureTranslation.ServiceDefaults\AzureTranslation.ServiceDefaults.csproj", "{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Commons", "src\AzureTranslation.Commons\AzureTranslation.Commons.csproj", "{DA1BF697-7174-4D4D-AD69-5FBCC8C9A595}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Function", "src\AzureTranslation.Function\AzureTranslation.Function.csproj", "{4DEF276B-5E5F-32DD-D090-8780FF0EC704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA1BF697-7174-4D4D-AD69-5FBCC8C9A595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA1BF697-7174-4D4D-AD69-5FBCC8C9A595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA1BF697-7174-4D4D-AD69-5FBCC8C9A595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA1BF697-7174-4D4D-AD69-5FBCC8C9A595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

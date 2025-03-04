@@ -74,6 +74,27 @@ module "cosmos" {
   geo_locations                  = var.cosmos_geo_locations
 }
 
+// TODO Refactor in a module
+resource "azurerm_servicebus_namespace" "servicebus" {
+  name                = local.name_servicebus_namespace
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Basic"
+
+  tags = local.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_servicebus_queue" "servicebus_queue" {
+  name         = local.name_servicebus_queue
+  namespace_id = azurerm_servicebus_namespace.servicebus.id
+}
+
 module "kv" {
   source                     = "./modules/kv"
   location                   = azurerm_resource_group.rg.location
@@ -96,6 +117,10 @@ module "kv" {
     {
       name  = "CosmosOptions:Endpoint"
       value = module.cosmos.endpoint
+    },
+    {
+      name  = "ConnectionStrings:ServiceBus"
+      value = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
     },
   ]
 }
@@ -130,26 +155,12 @@ module "appcs" {
         key   = "CosmosOptions:Database"
         value = var.cosmos_database_name
       },
+      {
+        label = var.appcs_label
+        key   = "ServiceBus:QueueName"
+        value = azurerm_servicebus_queue.servicebus_queue.name
+      },
   ])
 }
 
-// TODO Refactor in a module
-resource "azurerm_servicebus_namespace" "servicebus" {
-  name                = local.name_servicebus_namespace
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "Basic"
 
-  tags = local.tags
-
-  lifecycle {
-    ignore_changes = [
-      tags
-    ]
-  }
-}
-
-resource "azurerm_servicebus_queue" "servicebus_queue" {
-  name         = local.name_servicebus_queue
-  namespace_id = azurerm_servicebus_namespace.servicebus.id
-}

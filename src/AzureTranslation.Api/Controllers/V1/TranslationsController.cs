@@ -1,5 +1,7 @@
 ﻿using System.Net.Mime;
 
+using AzureTranslation.Api.Models;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureTranslation.Api.Controllers.V1;
@@ -20,8 +22,14 @@ public class TranslationsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Test(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTranslation(CancellationToken cancellationToken)
     {
-        return Ok("Hello World");
+        return Ok("Not implemented.");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PostTranslation([FromBody] TranslationRequest request, CancellationToken cancellationToken)
+    {
+        return Ok("Not implemented.");
     }
 }

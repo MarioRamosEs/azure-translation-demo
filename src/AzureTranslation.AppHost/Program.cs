@@ -26,6 +26,10 @@ builder.AddProject<Projects.AzureTranslation_Api>("azuretranslation-api")
        .WithEnvironment(Constants.ConnectionStrings.AppConfig, appConfigConnectionString)
        ;
 
+builder.AddAzureFunctionsProject<Projects.AzureTranslation_Function>("azuretranslation-function")
+       .WithEnvironment(Constants.ConnectionStrings.AppConfig, appConfigConnectionString)
+       ;
+
 var app = builder.Build();
 
 try
