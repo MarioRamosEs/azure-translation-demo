@@ -135,6 +135,39 @@ variable "app_insights_name" {
   default     = "appi-azure-translation"
 }
 
+/* STORAGE ACCOUNT */
+
+variable "storage_account_name" {
+  description = "(Required) Specifies the name of the Azure Virtual Network."
+  type        = string
+  nullable    = false
+  default     = "stfactorialaig"
+}
+
+variable "storage_account_tier" {
+  description = "(Required) Defines the Tier to use for this storage account. Valid options are `Standard` and `Premium`. Changing this forces a new resource to be created. Defaults to `Standard`."
+  type        = string
+  nullable    = false
+  default     = "Standard"
+
+  validation {
+    condition     = can(regex("^(Standard|Premium)$", var.storage_account_tier))
+    error_message = "Invalid account_tier. Valid options are `Standard` and `Premium`."
+  }
+}
+
+variable "storage_account_replication_type" {
+  description = "(Required) Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`. Changing this forces a new resource to be created when types `LRS`, `GRS` and `RAGRS` are changed to `ZRS`, `GZRS` or `RAGZRS` and vice versa. Defaults to `LRS`."
+  type        = string
+  nullable    = false
+  default     = "LRS"
+
+  validation {
+    condition     = can(regex("^(LRS|GRS|RAGRS|ZRS|GZRS|RAGZRS)$", var.storage_account_replication_type))
+    error_message = "Invalid account_replication_type. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`."
+  }
+}
+
 /* COSMOS DB */
 
 variable "cosmos_name" {

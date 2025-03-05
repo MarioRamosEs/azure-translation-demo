@@ -10,6 +10,7 @@ locals {
   name_log_analytics_workspace = "${var.log_analytics_workspace_name}-${var.suffix}"
   name_resource_group          = "${var.resource_group_name}-${var.suffix}"
   name_manage_identity         = "${var.managed_identity_name}-${var.suffix}"
+  name_storage_account         = "${var.storage_account_name}${var.suffix}"
   name_servicebus_namespace    = "sbns-azure-translation-${var.suffix}"   // TODO refactor
   name_servicebus_queue        = "sbq-translation-requests-${var.suffix}" // TODO refactor
 
@@ -74,6 +75,17 @@ module "cosmos" {
   geo_locations                  = var.cosmos_geo_locations
 }
 
+module "st" {
+  source                   = "./modules/st"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = var.location
+  name                     = local.name_storage_account
+  account_tier             = var.storage_account_tier
+  account_replication_type = var.storage_account_replication_type
+  identity_id              = module.mi.id
+  tags                     = local.tags
+}
+
 // TODO Refactor in a module
 resource "azurerm_servicebus_namespace" "servicebus" {
   name                = local.name_servicebus_namespace
@@ -111,6 +123,10 @@ module "kv" {
       value = module.appi.connection_string
     },
     {
+      name  = "ConnectionStrings:StorageAccount"
+      value = module.st.connection_string
+    },
+    {
       name  = "CosmosOptions:AuthKey"
       value = module.cosmos.key
     },
@@ -119,7 +135,7 @@ module "kv" {
       value = module.cosmos.endpoint
     },
     {
-      name  = "ConnectionStrings:ServiceBus"
+      name  = "ServiceBus"
       value = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
     },
   ]
