@@ -20,7 +20,7 @@ public class TranslationProcessor
 
     [Function(nameof(TranslationProcessor))]
     public async Task Run(
-        [ServiceBusTrigger("sbq-translation-requests-dev", Connection = "ServiceBus")] // TODO: Set queue name by configuration
+        [ServiceBusTrigger("sbq-translation-requests-mr", Connection = "ServiceBus")] // TODO: Set queue name by configuration
         ServiceBusReceivedMessage message,
         ServiceBusMessageActions messageActions)
     {

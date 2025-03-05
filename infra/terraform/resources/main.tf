@@ -12,7 +12,6 @@ locals {
   name_storage_account         = "${var.storage_account_name}${var.suffix}"
   name_servicebus_namespace    = "sbns-azure-translation-${var.suffix}"   // TODO refactor
   name_servicebus_queue        = "sbq-translation-requests-${var.suffix}" // TODO refactor ,  we dont need the sufix here
-  name_storage_table           = "Translations"
 
   tags = merge(var.tags, {
     createdAt   = "${formatdate("YYYY-MM-DD hh:mm:ss", timestamp())} UTC"
@@ -70,7 +69,7 @@ module "st" {
 }
 
 resource "azurerm_storage_table" "translations" {
-  name                 = local.name_storage_table
+  name                 = var.translations_table_name
   storage_account_name = local.name_storage_account
 }
 
@@ -143,8 +142,13 @@ module "appcs" {
     [
       {
         label = var.appcs_label
-        key   = "ServiceBus:QueueName"
+        key   = "ServiceBusOptions:QueueName"
         value = azurerm_servicebus_queue.servicebus_queue.name
+      },
+      {
+        label = var.appcs_label
+        key   = "TableStorageOptions:TranslationsTableName"
+        value = var.translations_table_name
       },
   ])
 }

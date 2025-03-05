@@ -17,8 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AzureTranslation.Infrastructure\AzureTranslation.Infrastructure.csproj" />
     <ProjectReference Include="..\AzureTranslation.Commons\AzureTranslation.Core.csproj" />
     <ProjectReference Include="..\AzureTranslation.ServiceDefaults\AzureTranslation.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Diagnostics" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

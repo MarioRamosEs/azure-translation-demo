@@ -195,3 +195,12 @@ variable "log_analytics_workspace_name" {
   nullable    = false
   default     = "log-azure-translation"
 }
+
+/* STORAGE TABLE */
+
+variable "translations_table_name" {
+  description = "(Required) Specifies the name of the Azure Table Storage for translations. Defaults to `Translations`."
+  type        = string
+  nullable    = false
+  default     = "Translations"
+}

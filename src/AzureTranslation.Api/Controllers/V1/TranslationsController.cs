@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Net.Mime;
 
-using Azure.Data.Tables;
-using Azure.Messaging.ServiceBus;
-
 using AzureTranslation.API.Controllers.V1.Models;
+using AzureTranslation.Common.Models;
+using AzureTranslation.Core.Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,16 +18,12 @@ namespace AzureTranslation.Api.Controllers.V1;
 [Produces(MediaTypeNames.Application.Json)]
 public class TranslationsController : ControllerBase
 {
-    private readonly ServiceBusClient serviceBusClient;
-    private readonly TableClient tableClient;
+    private readonly ITranslationService translationService;
     private readonly ILogger<TranslationsController> logger;
 
-    private const string PartitionKeyValue = "Translations";
-
-    public TranslationsController(ServiceBusClient serviceBusClient, TableServiceClient tableServiceClient, ILogger<TranslationsController> logger)
+    public TranslationsController(ITranslationService translationService, ILogger<TranslationsController> logger)
     {
-        this.serviceBusClient = serviceBusClient;
-        this.tableClient = tableServiceClient.GetTableClient("Translations");
+        this.translationService = translationService;
         this.logger = logger;
     }
 
@@ -36,46 +32,40 @@ public class TranslationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateTranslationRequest([Required] NewTranslationRequest request, CancellationToken cancellationToken)
     {
-        var translationId = Guid.NewGuid().ToString("N");
-
-        // Add to Table Storage
-        var entity = new TranslationEntity
-        {
-            PartitionKey = PartitionKeyValue,
-            RowKey = translationId,
-            OriginalText = request.OriginalText,
-            Status = "Pending",
-            CreatedAt = DateTime.UtcNow,
-        };
-
-        await tableClient.AddEntityAsync(entity);
-
-        // Add to Service Bus
-        await using var sender = serviceBusClient.CreateSender("sbq-translation-requests-mr");
-
-        var message = new ServiceBusMessage()
-        {
-            MessageId = translationId,
-            CorrelationId = translationId,
-        };
-
-        await sender.SendMessageAsync(message, cancellationToken);
+        var translationId = await translationService.CreateTranslationRequestAsync(request.OriginalText, cancellationToken);
 
         return AcceptedAtAction(
-            actionName: nameof(GetTranslationStatus),
+            actionName: nameof(GetTranslation),
             controllerName: "Translations",
-            routeValues: new { id = translationId },
+            routeValues: new { translationId },
             value: new NewTranslationResponse
             {
                 TranslationId = translationId,
             });
+
+        // TODO put a try catch block here
     }
 
-    [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TranslationStatusResponse))]
+    [HttpGet("{translationId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TranslationDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetTranslationStatus([Required] string id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTranslation([FromRoute] string translationId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var translation = await translationService.GetTranslationAsync(translationId, cancellationToken);
+
+            if (translation == null)
+            {
+                return NotFound($"Translation with ID '{translationId}' not found.");
+            }
+
+            return Ok(translation);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error retrieving translation with ID {TranslationId}", translationId);
+            return StatusCode((int)HttpStatusCode.InternalServerError, "An error occurred while retrieving the translation.");
+        }
     }
 }

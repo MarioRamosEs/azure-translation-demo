@@ -24,4 +24,8 @@
     <ProjectReference Include="..\AzureTranslation.Function\AzureTranslation.Function.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Diagnostics" Version="8.4.0" />
+  </ItemGroup>
+
 </Project>

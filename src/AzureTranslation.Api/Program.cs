@@ -5,6 +5,8 @@ using Asp.Versioning;
 using Azure.Identity;
 
 using AzureTranslation.Api;
+using AzureTranslation.Core.Extensions;
+using AzureTranslation.Infrastructure.Extensions;
 using AzureTranslation.ServiceDefaults;
 
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
@@ -75,9 +77,14 @@ if (Debugger.IsAttached)
 
 builder.AddServiceDefaults();
 
+// Internal Services
+builder.Services.AddTranslationService();
+
 // External Services
-builder.AddAzureServiceBusClient("ServiceBus");
-builder.AddAzureTableClient("StorageAccount");
+builder.Services.AddTableStorageServices(builder.Configuration);
+builder.Services.AddServiceBusServices(builder.Configuration);
+builder.Services.AddTableStorageTranslationRepository();
+builder.Services.AddAzureCognitiveLanguageServices();
 
 builder.Services.AddHealthChecks();
 

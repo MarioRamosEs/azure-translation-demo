@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Azure.Messaging.ServiceBus" Version="9.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\src\AzureTranslation.Commons\AzureTranslation.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Diagnostics" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

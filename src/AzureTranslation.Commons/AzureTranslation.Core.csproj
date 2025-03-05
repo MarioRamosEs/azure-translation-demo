@@ -15,4 +15,8 @@
     <ProjectReference Include="..\AzureTranslation.Common\AzureTranslation.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Diagnostics" Version="8.4.0" />
+  </ItemGroup>
+
 </Project>
