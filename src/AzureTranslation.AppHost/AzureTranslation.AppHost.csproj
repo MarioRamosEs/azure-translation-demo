@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureTranslation.Api\AzureTranslation.Api.csproj" />
+    <ProjectReference Include="..\AzureTranslation.Api\AzureTranslation.API.csproj" />
     <ProjectReference Include="..\AzureTranslation.Function\AzureTranslation.Function.csproj" />
   </ItemGroup>
 
