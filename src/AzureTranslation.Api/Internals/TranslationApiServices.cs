@@ -20,6 +20,6 @@ internal sealed class TranslationApiServices : ITranslationApiService
     /// <inheritdoc />
     public Task<TranslationStatus> GetTranslationStatusAsync(string requestId, CancellationToken cancellationToken)
     {
-
+        throw new NotImplementedException();
     }
 }

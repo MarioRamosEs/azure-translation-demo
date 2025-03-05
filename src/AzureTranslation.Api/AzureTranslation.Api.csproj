@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageReference Include="Aspire.Azure.Messaging.ServiceBus" Version="9.1.0" />
     <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />

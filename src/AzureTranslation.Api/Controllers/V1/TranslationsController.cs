@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 
+using Azure.Messaging.ServiceBus;
+
 using AzureTranslation.API.Controllers.V1.Models;
 
 using Microsoft.AspNetCore.Mvc;
@@ -15,60 +17,47 @@ namespace AzureTranslation.Api.Controllers.V1;
 [Produces(MediaTypeNames.Application.Json)]
 public class TranslationsController : ControllerBase
 {
-    private readonly ITranslationApiService translationApiService;
+    private readonly ServiceBusClient serviceBusClient;
     private readonly ILogger<TranslationsController> logger;
 
-    public TranslationsController(ITranslationApiService translationApiService, ILogger<TranslationsController> logger)
+    public TranslationsController(ServiceBusClient serviceBusClient, ILogger<TranslationsController> logger)
     {
-        this.translationApiService = translationApiService;
+        this.serviceBusClient = serviceBusClient;
         this.logger = logger;
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(NewTranslationResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateTranslationRequest([Required] NewTranslationRequest request)
+    public async Task<IActionResult> CreateTranslationRequest([Required] NewTranslationRequest request, CancellationToken cancellationToken)
     {
-        try
+        var translationId = Guid.NewGuid().ToString("N");
+
+        await using var sender = serviceBusClient.CreateSender("sbq-translation-requests-mr");
+
+        var message = new ServiceBusMessage()
         {
-            logger.LogInformation("Creating new translation request");
+            MessageId = translationId,
+            CorrelationId = translationId,
+        };
 
-            string requestId = await _translationOrchestrator.CreateTranslationRequestAsync(request.OriginalText);
+        await sender.SendMessageAsync(message, cancellationToken);
 
-            logger.LogInformation("Created translation request with ID: {RequestId}", requestId);
-
-            return Accepted(new NewTranslationResponse { RequestId = requestId });
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error creating translation request");
-            return StatusCode(500, "Ocurrió un error al procesar la solicitud de traducción");
-        }
+        return AcceptedAtAction(
+            actionName: nameof(GetTranslationStatus),
+            controllerName: "Translations",
+            routeValues: new { id = translationId },
+            value: new NewTranslationResponse
+            {
+                TranslationId = translationId,
+            });
     }
 
-    [HttpGet("{requestId:string}")]
+    [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TranslationStatusResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetTranslationStatus([Required] string requestId)
+    public async Task<IActionResult> GetTranslationStatus([Required] string id, CancellationToken cancellationToken)
     {
-        try
-        {
-            logger.LogInformation("Fetching translation status for request ID: {RequestId}", requestId);
-
-            var translationStatus = await _translationOrchestrator.GetTranslationStatusAsync(requestId);
-
-            if (translationStatus == null)
-            {
-                logger.LogWarning("Translation request not found: {RequestId}", requestId);
-                return NotFound($"No se encontró una solicitud de traducción con ID {requestId}");
-            }
-
-            return Ok(translationStatus);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error fetching translation status for request ID: {RequestId}", requestId);
-            return StatusCode(500, "Ocurrió un error al obtener el estado de la traducción");
-        }
+        throw new NotImplementedException();
     }
 }

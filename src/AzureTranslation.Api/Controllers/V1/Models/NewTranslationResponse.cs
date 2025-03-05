@@ -2,5 +2,5 @@
 
 public sealed class NewTranslationResponse
 {
-    public required string RequestId { get; init; }
+    public required string TranslationId { get; init; }
 }

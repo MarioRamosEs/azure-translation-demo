@@ -22,7 +22,7 @@ builder.Configuration.AddJsonFile($@"appsettings.{builder.Environment.Environmen
 var appConfigConnectionString = builder.Configuration[Constants.ConnectionStrings.AppConfig];
 
 // Projects
-builder.AddProject<Projects.AzureTranslation_Api>("azuretranslation-api")
+builder.AddProject<Projects.AzureTranslation_API>("azuretranslation-api")
        .WithEnvironment(Constants.ConnectionStrings.AppConfig, appConfigConnectionString)
        ;
 

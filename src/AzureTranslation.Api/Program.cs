@@ -74,6 +74,8 @@ if (Debugger.IsAttached)
 
 builder.AddServiceDefaults();
 
+builder.AddAzureServiceBusClient("ServiceBus");
+
 builder.Services.AddHealthChecks();
 
 builder.Services.AddControllers();
