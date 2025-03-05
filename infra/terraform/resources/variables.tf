@@ -1,19 +1,5 @@
 ## ---- COMMON VARIABLES & RESOURCE GROUP ---- ##
 
-variable "development_mode" {
-  description = "(Optional) Specifies whether this resource should be created with configurations suitable for develpment purposes. Default is `false`."
-  type        = bool
-  nullable    = false
-  default     = false
-}
-
-variable "environment" {
-  description = "(Required) Specifies the deployment environment. Possible values are `Development`, `Staging` and `Production`. The values are case-sensitive. Defaults to `Development`."
-  type        = string
-  nullable    = false
-  default     = "Development"
-}
-
 variable "subscription_id" {
   description = "(Required) The subscription ID which should be used for deployments. This value is required when performing a `plan`. `apply` or `destroy` operation. Since version 4.0 of the Azure Provider (`azurerm`), it's now required to specify the Azure Subscription ID when configuring a provider instance in the configuration. More info: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/4.0-upgrade-guide#specifying-subscription-id-is-now-mandatory"
   type        = string
@@ -141,7 +127,7 @@ variable "storage_account_name" {
   description = "(Required) Specifies the name of the Azure Virtual Network."
   type        = string
   nullable    = false
-  default     = "stfactorialaig"
+  default     = "staztranslation"
 }
 
 variable "storage_account_tier" {
@@ -166,84 +152,6 @@ variable "storage_account_replication_type" {
     condition     = can(regex("^(LRS|GRS|RAGRS|ZRS|GZRS|RAGZRS)$", var.storage_account_replication_type))
     error_message = "Invalid account_replication_type. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`."
   }
-}
-
-/* COSMOS DB */
-
-variable "cosmos_name" {
-  description = "(Required) Specifies the name of the Cosmos DB."
-  type        = string
-  nullable    = false
-  default     = "cosmos-azure-translation"
-}
-
-variable "cosmos_location" {
-  description = "(Optional) Specifies the location of the Cosmos DB service. If `null`, then the location of the resource group is used. Defaults to `null`."
-  type        = string
-  nullable    = true
-  default     = null
-}
-
-variable "cosmos_automatic_failover_enabled" {
-  description = "(Optional) Enable automatic failover for this Cosmos DB account. Defaults to `false`."
-  type        = bool
-  nullable    = false
-  default     = false
-}
-
-variable "cosmos_database_name" {
-  description = "(Required) Specifies the name of the database in CosmosDB."
-  type        = string
-  nullable    = false
-  default     = "azure-translation"
-}
-
-variable "cosmos_container_name_translations" {
-  description = "(Required) Specifies the name of the container in CosmosDB that will store the translations."
-  type        = string
-  nullable    = false
-  default     = "azure-translations"
-}
-
-variable "cosmos_container_partition_key_paths" {
-  description = "(Required) Specifies the partition key paths for the container."
-  type        = list(string)
-  nullable    = false
-  default     = ["/id"]
-}
-
-variable "cosmos_local_authentication_disabled" {
-  description = "(Optional) Disable local authentication and ensure only Manage Identities and Role-Based Access Control (RBAC) can be used exclusively for authentication. Can be set only when using the SQL API. Defaults to `true`."
-  type        = bool
-  nullable    = false
-  default     = true
-}
-
-variable "cosmos_throughput" {
-  description = "(Required) Cosmos DB database throughput. This value should be equal to or greater than 400 and less than or equal to 1000000, in increments of 100. Default is 400."
-  type        = number
-  nullable    = false
-  default     = 400
-
-  validation {
-    condition     = var.cosmos_throughput >= 400 && var.cosmos_throughput <= 1000000
-    error_message = "Cosmos DB manual throughput should be equal to or greater than 400 and less than or equal to 1000000."
-  }
-
-  validation {
-    condition     = var.cosmos_throughput % 100 == 0
-    error_message = "Cosmos DB throughput should be in increments of 100."
-  }
-}
-
-variable "cosmos_geo_locations" {
-  description = "(Optional) A list of Cosmos DB locations. Each location has a `location` and `failover_priority`."
-  nullable    = true
-  type = list(object({
-    location          = string
-    failover_priority = number
-  }))
-  default = []
 }
 
 /* KEY VAULT */

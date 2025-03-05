@@ -5,20 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureTranslation.Function;
 
-public class TranslationFunction
+public class TranslationProcessor
 {
-    private readonly ILogger<TranslationFunction> logger;
+    private readonly ILogger<TranslationProcessor> logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TranslationFunction"/> class.
+    /// Initializes a new instance of the <see cref="TranslationProcessor"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    public TranslationFunction(ILogger<TranslationFunction> logger)
+    public TranslationProcessor(ILogger<TranslationProcessor> logger)
     {
         this.logger = logger;
     }
 
-    [Function(nameof(TranslationFunction))]
+    [Function(nameof(TranslationProcessor))]
     public async Task Run(
         [ServiceBusTrigger("sbq-translation-requests-dev", Connection = "ServiceBus")] // TODO: Set queue name by configuration
         ServiceBusReceivedMessage message,

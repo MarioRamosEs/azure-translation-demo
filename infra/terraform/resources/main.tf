@@ -5,7 +5,6 @@ data "azurerm_subscription" "current" {}
 locals {
   name_app_insights            = "${var.app_insights_name}-${var.suffix}"
   name_appcs                   = "${var.appcs_name}-${var.suffix}"
-  name_cosmos                  = "${var.cosmos_name}-${var.suffix}"
   name_kv                      = "${var.kv_name}-${var.suffix}"
   name_log_analytics_workspace = "${var.log_analytics_workspace_name}-${var.suffix}"
   name_resource_group          = "${var.resource_group_name}-${var.suffix}"
@@ -33,7 +32,6 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-
 module "mi" {
   source              = "./modules/mi"
   location            = azurerm_resource_group.rg.location
@@ -57,22 +55,6 @@ module "appi" {
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = module.log.id
   tags                       = local.tags
-}
-
-module "cosmos" {
-  source                         = "./modules/cosmos"
-  development_mode               = var.development_mode
-  resource_group_name            = azurerm_resource_group.rg.name
-  location                       = var.cosmos_location == null ? var.location : var.cosmos_location
-  name                           = local.name_cosmos
-  database_name                  = var.cosmos_database_name
-  container_name_translations    = var.cosmos_container_name_translations
-  identity_id                    = module.mi.id
-  identity_service_principal_ids = [module.mi.principal_id]
-  container_partition_key_paths  = var.cosmos_container_partition_key_paths
-  throughput                     = var.cosmos_throughput
-  tags                           = local.tags
-  geo_locations                  = var.cosmos_geo_locations
 }
 
 module "st" {
@@ -127,15 +109,7 @@ module "kv" {
       value = module.st.connection_string
     },
     {
-      name  = "CosmosOptions:AuthKey"
-      value = module.cosmos.key
-    },
-    {
-      name  = "CosmosOptions:Endpoint"
-      value = module.cosmos.endpoint
-    },
-    {
-      name  = "ServiceBus"
+      name  = "ConnectionStrings:ServiceBus"
       value = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
     },
   ]
@@ -161,16 +135,6 @@ module "appcs" {
   ]
   values = concat(
     [
-      {
-        label = var.appcs_label
-        key   = "AssistantOptions:CosmosContainerName"
-        value = var.cosmos_container_name_translations
-      },
-      {
-        label = var.appcs_label
-        key   = "CosmosOptions:Database"
-        value = var.cosmos_database_name
-      },
       {
         label = var.appcs_label
         key   = "ServiceBus:QueueName"
