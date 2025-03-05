@@ -11,7 +11,8 @@ locals {
   name_manage_identity         = "${var.managed_identity_name}-${var.suffix}"
   name_storage_account         = "${var.storage_account_name}${var.suffix}"
   name_servicebus_namespace    = "sbns-azure-translation-${var.suffix}"   // TODO refactor
-  name_servicebus_queue        = "sbq-translation-requests-${var.suffix}" // TODO refactor
+  name_servicebus_queue        = "sbq-translation-requests-${var.suffix}" // TODO refactor ,  we dont need the sufix here
+  name_storage_table           = "Translations"
 
   tags = merge(var.tags, {
     createdAt   = "${formatdate("YYYY-MM-DD hh:mm:ss", timestamp())} UTC"
@@ -66,6 +67,11 @@ module "st" {
   account_replication_type = var.storage_account_replication_type
   identity_id              = module.mi.id
   tags                     = local.tags
+}
+
+resource "azurerm_storage_table" "translations" {
+  name                 = local.name_storage_table
+  storage_account_name = local.name_storage_account
 }
 
 // TODO Refactor in a module

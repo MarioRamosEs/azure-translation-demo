@@ -15,11 +15,11 @@ public interface ITranslationApiService
     /// <returns>A unique identifier for the translation request.</returns>
     Task<string> CreateTranslationRequestAsync(string originalText, CancellationToken cancellationToken);
 
-    /// <summary>
-    /// Retrieves the current status of a translation request.
-    /// </summary>
-    /// <param name="requestId">The unique identifier of the translation request.</param>
-    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
-    /// <returns>The current status of the translation request.</returns>
-    Task<TranslationStatus> GetTranslationStatusAsync(string requestId, CancellationToken cancellationToken);
+    ///// <summary>
+    ///// Retrieves the current status of a translation request.
+    ///// </summary>
+    ///// <param name="requestId">The unique identifier of the translation request.</param>
+    ///// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+    ///// <returns>The current status of the translation request.</returns>
+    //Task<TranslationStatus> GetTranslationStatusAsync(string requestId, CancellationToken cancellationToken);
 }

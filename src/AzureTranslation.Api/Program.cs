@@ -74,7 +74,9 @@ if (Debugger.IsAttached)
 
 builder.AddServiceDefaults();
 
+// External Services
 builder.AddAzureServiceBusClient("ServiceBus");
+builder.AddAzureTableClient("StorageAccount");
 
 builder.Services.AddHealthChecks();
 

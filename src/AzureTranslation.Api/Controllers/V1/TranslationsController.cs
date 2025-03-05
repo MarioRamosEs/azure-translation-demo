@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using System.Transactions;
 
+using Azure.Core;
+using Azure.Data.Tables;
 using Azure.Messaging.ServiceBus;
 
 using AzureTranslation.API.Controllers.V1.Models;
+using AzureTranslation.Commons.Models;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +22,15 @@ namespace AzureTranslation.Api.Controllers.V1;
 public class TranslationsController : ControllerBase
 {
     private readonly ServiceBusClient serviceBusClient;
+    private readonly TableClient tableClient;
     private readonly ILogger<TranslationsController> logger;
 
-    public TranslationsController(ServiceBusClient serviceBusClient, ILogger<TranslationsController> logger)
+    private const string PartitionKeyValue = "Translations";
+
+    public TranslationsController(ServiceBusClient serviceBusClient, TableServiceClient tableServiceClient, ILogger<TranslationsController> logger)
     {
         this.serviceBusClient = serviceBusClient;
+        this.tableClient = tableServiceClient.GetTableClient("Translations");
         this.logger = logger;
     }
 
@@ -33,6 +41,19 @@ public class TranslationsController : ControllerBase
     {
         var translationId = Guid.NewGuid().ToString("N");
 
+        // Add to Table Storage
+        var entity = new TranslationEntity
+        {
+            PartitionKey = PartitionKeyValue,
+            RowKey = translationId,
+            OriginalText = request.OriginalText,
+            Status = "Pending",
+            CreatedAt = DateTime.UtcNow,
+        };
+
+        await tableClient.AddEntityAsync(entity);
+
+        // Add to Service Bus
         await using var sender = serviceBusClient.CreateSender("sbq-translation-requests-mr");
 
         var message = new ServiceBusMessage()
