@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
-using System.Transactions;
 
-using Azure.Core;
 using Azure.Data.Tables;
 using Azure.Messaging.ServiceBus;
 
 using AzureTranslation.API.Controllers.V1.Models;
-using AzureTranslation.Commons.Models;
 
 using Microsoft.AspNetCore.Mvc;
 

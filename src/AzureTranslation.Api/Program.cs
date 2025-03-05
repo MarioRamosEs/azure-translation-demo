@@ -5,6 +5,7 @@ using Asp.Versioning;
 using Azure.Identity;
 
 using AzureTranslation.Api;
+using AzureTranslation.ServiceDefaults;
 
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 

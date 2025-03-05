@@ -1,6 +1,4 @@
-﻿using AzureTranslation.Commons.Models;
-
-namespace AzureTranslation.API.Abstractions;
+﻿namespace AzureTranslation.API.Abstractions;
 
 /// <summary>
 /// Provides services for managing translation requests and monitoring their status.

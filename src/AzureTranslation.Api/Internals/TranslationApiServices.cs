@@ -1,6 +1,5 @@
 ﻿
 using AzureTranslation.API.Abstractions;
-using AzureTranslation.Commons.Models;
 
 namespace AzureTranslation.API.Internals;
 
