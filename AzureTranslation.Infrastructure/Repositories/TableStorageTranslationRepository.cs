@@ -11,6 +11,8 @@ namespace AzureTranslation.Infrastructure.Repositories;
 
 internal sealed class TableStorageTranslationRepository : ITranslationRepository
 {
+    private const string PartitionKey = "Translation";
+
     private readonly TableClient tableClient;
     private readonly ILogger<TableStorageTranslationRepository> logger;
 
@@ -22,7 +24,8 @@ internal sealed class TableStorageTranslationRepository : ITranslationRepository
 
     public Task CreateTranslationAsync(TranslationEntity translation, CancellationToken cancellationToken)
     {
-        return tableClient.AddEntityAsync(translation, cancellationToken: cancellationToken); // Todo establecer aqui el partition key
+        translation.PartitionKey = PartitionKey;
+        return tableClient.AddEntityAsync(translation, cancellationToken: cancellationToken);
     }
 
     public Task<TranslationEntity> GetTranslationAsync(string translationId, CancellationToken cancellationToken) => throw new NotImplementedException();

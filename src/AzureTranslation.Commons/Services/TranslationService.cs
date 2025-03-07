@@ -38,7 +38,6 @@ internal sealed class TranslationService : ITranslationService
 
         var translationEntity = new TranslationEntity
         {
-            PartitionKey = "Translation", // TODO: porque ponemos esto aqui
             RowKey = translationId,
             OriginalText = text,
             Status = TranslationStatus.Pending.ToString(),
@@ -95,14 +94,15 @@ internal sealed class TranslationService : ITranslationService
         try
         {
             // Detect language
-            translation.DetectedLanguage = await languageDetectionService.DetectLanguageAsync(translation.OriginalText, cancellationToken);
+            translation.DetectedLanguage = await languageDetectionService.DetectLanguageAsync(translation.OriginalText, cancellationToken) ?? "unknown";
 
-            // Translate if not Spanish
-            if (translation.DetectedLanguage != "es")
+            // Translate if not Spanish or unknown
+            if (translation.DetectedLanguage != "es" && translation.DetectedLanguage != "unknown")
             {
-                translation.TranslatedText = await textTranslationService.TranslateToSpanishAsync(
+                translation.TranslatedText = await textTranslationService.TranslateAsync(
                     translation.OriginalText,
                     translation.DetectedLanguage,
+                    "es",
                     cancellationToken);
             }
             else

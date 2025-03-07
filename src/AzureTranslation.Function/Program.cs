@@ -42,6 +42,15 @@ var builder = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.AddAzureAppConfiguration();
+
+        // Internal Services
+        // services.AddTranslationService();
+
+        // External Services
+        // services.AddAzureTranslationService();
+
+        // TODO
+        // builder.Services.AddAzureCognitiveLanguageServices(builder.Configuration);
     })
     .ConfigureFunctionsWebApplication()
     ;

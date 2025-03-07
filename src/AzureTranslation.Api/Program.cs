@@ -84,7 +84,7 @@ builder.Services.AddTranslationService();
 builder.Services.AddTableStorageServices(builder.Configuration);
 builder.Services.AddAzureBusServices(builder.Configuration);
 builder.Services.AddTableStorageTranslationRepository();
-builder.Services.AddAzureCognitiveLanguageServices();
+builder.Services.AddAzureCognitiveLanguageServices(builder.Configuration); // No deberiamos necesitar poner esto aqui
 
 builder.Services.AddHealthChecks();
 

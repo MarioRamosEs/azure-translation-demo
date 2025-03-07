@@ -94,11 +94,26 @@ resource "azurerm_servicebus_queue" "servicebus_queue" {
 }
 
 // TODO Refactor in a module
-resource "azurerm_cognitive_account" "this" {
+resource "azurerm_cognitive_account" "translation" {
   name                = "trsl-azure-translation-${var.suffix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "TextTranslation"
+  tags                = local.tags
+  sku_name            = "F0"
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_cognitive_account" "language" {
+  name                = "lang-azure-translation-${var.suffix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  kind                = "TextAnalytics"
   tags                = local.tags
   sku_name            = "F0"
 
@@ -134,12 +149,16 @@ module "kv" {
     },
     {
       name  = "TranslatorOptions:Key"
-      value = azurerm_cognitive_account.this.primary_access_key
+      value = azurerm_cognitive_account.translation.primary_access_key
     },
     {
-      name  = "TranslatorOptions:Endpoint"
-      value = azurerm_cognitive_account.this.endpoint
-    }
+      name  = "LanguageOptions:Key"
+      value = azurerm_cognitive_account.language.primary_access_key
+    },
+    # {
+    #   name  = "TranslatorOptions:Endpoint"
+    #   value = azurerm_cognitive_account.translation.endpoint
+    # }
   ]
 }
 
@@ -173,11 +192,11 @@ module "appcs" {
         key   = "TableStorageOptions:TranslationsTableName"
         value = var.translations_table_name
       },
-      {
-        label = var.appcs_label
-        key   = "TranslatorOptions:Region"
-        value = var.location
-      },
+      # {
+      #   label = var.appcs_label
+      #   key   = "TranslatorOptions:Region"
+      #   value = var.location
+      # },
   ])
 }
 

@@ -1,9 +1,12 @@
-﻿using AzureTranslation.Core.Interfaces;
+﻿using Azure;
+
+using AzureTranslation.Core.Interfaces;
 using AzureTranslation.Core.Services;
 using AzureTranslation.Infrastructure.Options;
 using AzureTranslation.Infrastructure.Repositories;
 using AzureTranslation.Infrastructure.Services;
 
+using Microsoft.Azure.Amqp.Encoding;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,10 +46,29 @@ public static class IServiceCollectionExtensions
         return services.AddScoped<ITranslationRepository, TableStorageTranslationRepository>();
     }
 
-    public static IServiceCollection AddAzureCognitiveLanguageServices(this IServiceCollection services)
+    public static IServiceCollection AddAzureCognitiveLanguageServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ILanguageDetectionService, CognitiveServicesLanguageDetector>(); // TODO ver si esto tiene to be Scoped
-        services.AddScoped<ITextTranslationService, CognitiveServicesTranslator>(); // TODO ver si esto tiene to be Scoped
+        var translatorApiKey = configuration.GetValue<string>("TranslatorOptions:Key");
+        if (string.IsNullOrWhiteSpace(translatorApiKey))
+        {
+            throw new InvalidOperationException("The TranslatorOptions:Key configuration value is missing.");
+        }
+
+        var languageApiKey = configuration.GetValue<string>("LanguageOptions:Key");
+        if (string.IsNullOrWhiteSpace(languageApiKey))
+        {
+            throw new InvalidOperationException("The LanguageOptions:Key configuration value is missing.");
+        }
+
+        services.AddAzureClients(builder =>
+        {
+            builder.AddTextTranslationClient(new AzureKeyCredential(translatorApiKey));
+
+            builder.AddTextAnalyticsClient(new Uri("https://francecentral.api.cognitive.microsoft.com/"), new AzureKeyCredential(translatorApiKey)); // TODO load from configuration
+        });
+
+        services.AddScoped<ILanguageDetectionService, CognitiveServicesLanguageDetector>();
+        services.AddScoped<ITextTranslationService, CognitiveServicesTranslator>();
 
         return services;
     }
