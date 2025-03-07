@@ -7,6 +7,7 @@ namespace AzureTranslation.Function;
 
 public class TranslationProcessor
 {
+    //private readonly ITranslationService translationService;
     private readonly ILogger<TranslationProcessor> logger;
 
     /// <summary>
@@ -24,9 +25,9 @@ public class TranslationProcessor
         ServiceBusReceivedMessage message,
         ServiceBusMessageActions messageActions)
     {
-        logger.LogInformation("Message ID: {id}", message.MessageId);
-        logger.LogInformation("Message Body: {body}", message.Body);
-        logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
+        //logger.LogInformation("Message ID: {id}", message.MessageId);
+        //logger.LogInformation("Message Body: {body}", message.Body);
+        //logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
 
         // Complete the message
         await messageActions.CompleteMessageAsync(message);
