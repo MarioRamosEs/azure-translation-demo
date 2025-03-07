@@ -1,5 +1,8 @@
 ﻿using Azure.Identity;
 
+using AzureTranslation.Core.Extensions;
+using AzureTranslation.Infrastructure.Extensions;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,13 +47,13 @@ var builder = new HostBuilder()
         services.AddAzureAppConfiguration();
 
         // Internal Services
-        // services.AddTranslationService();
+        services.AddTranslationService();
+        services.AddTableStorageTranslationRepository();
 
         // External Services
-        // services.AddAzureTranslationService();
-
-        // TODO
-        // builder.Services.AddAzureCognitiveLanguageServices(builder.Configuration);
+        services.AddTableStorageServices(context.Configuration);
+        services.AddAzureCognitiveLanguageServices(context.Configuration);
+        services.AddAzureBusServices(context.Configuration); // No necesitamos esto!!
     })
     .ConfigureFunctionsWebApplication()
     ;

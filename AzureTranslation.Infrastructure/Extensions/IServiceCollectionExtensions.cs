@@ -6,7 +6,6 @@ using AzureTranslation.Infrastructure.Options;
 using AzureTranslation.Infrastructure.Repositories;
 using AzureTranslation.Infrastructure.Services;
 
-using Microsoft.Azure.Amqp.Encoding;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,9 +61,9 @@ public static class IServiceCollectionExtensions
 
         services.AddAzureClients(builder =>
         {
-            builder.AddTextTranslationClient(new AzureKeyCredential(translatorApiKey));
+            builder.AddTextTranslationClient(new AzureKeyCredential(translatorApiKey), "francecentral"); // TODO load from configuration
 
-            builder.AddTextAnalyticsClient(new Uri("https://francecentral.api.cognitive.microsoft.com/"), new AzureKeyCredential(translatorApiKey)); // TODO load from configuration
+            builder.AddTextAnalyticsClient(new Uri("https://francecentral.api.cognitive.microsoft.com/"), new AzureKeyCredential(languageApiKey)); // TODO load from configuration
         });
 
         services.AddScoped<ILanguageDetectionService, CognitiveServicesLanguageDetector>();

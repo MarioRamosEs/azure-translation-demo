@@ -42,7 +42,7 @@ public class TranslationProcessor
 
             logger.LogInformation("Finished processing translation with ID: {TranslationId}", message.MessageId);
 
-            await messageActions.CompleteMessageAsync(message);
+            await messageActions.CompleteMessageAsync(message, cancellationToken);
         }
         catch (Exception ex)
         {

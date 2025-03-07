@@ -89,8 +89,9 @@ resource "azurerm_servicebus_namespace" "servicebus" {
 }
 
 resource "azurerm_servicebus_queue" "servicebus_queue" {
-  name         = local.name_servicebus_queue
-  namespace_id = azurerm_servicebus_namespace.servicebus.id
+  name          = local.name_servicebus_queue
+  namespace_id  = azurerm_servicebus_namespace.servicebus.id
+  lock_duration = "PT5M" # 5 minutos de duración de bloqueo // TODO put in variables
 }
 
 // TODO Refactor in a module

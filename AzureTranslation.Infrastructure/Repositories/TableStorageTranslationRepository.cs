@@ -28,7 +28,25 @@ internal sealed class TableStorageTranslationRepository : ITranslationRepository
         return tableClient.AddEntityAsync(translation, cancellationToken: cancellationToken);
     }
 
-    public Task<TranslationEntity> GetTranslationAsync(string translationId, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task<TranslationEntity?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await tableClient.GetEntityAsync<TranslationEntity>(
+                "Translation",
+                translationId,
+                cancellationToken: cancellationToken);
+        }
+        catch (Azure.RequestFailedException ex) when (ex.Status == 404)
+        {
+            logger.LogWarning("Translation with ID {TranslationId} not found", translationId);
+            return null;
+        }
+    }
 
-    public Task UpdateTranslationAsync(TranslationEntity translation, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task UpdateTranslationAsync(TranslationEntity translation, CancellationToken cancellationToken)
+    {
+        translation.PartitionKey = PartitionKey;
+        await tableClient.UpdateEntityAsync(translation, translation.ETag, TableUpdateMode.Merge, cancellationToken); // TODO Modificar esto
+    }
 }

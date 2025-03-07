@@ -91,6 +91,12 @@ internal sealed class TranslationService : ITranslationService
             return;
         }
 
+        if (translation.Status != TranslationStatus.Pending.ToString())
+        {
+            logger.LogWarning("Translation with ID {TranslationId} is not in pending status. Current status: {Status}", translationId, translation.Status);
+            return;
+        }
+
         try
         {
             // Detect language
@@ -124,7 +130,6 @@ internal sealed class TranslationService : ITranslationService
             translation.ErrorMessage = ex.Message;
         }
 
-        await translationRepository.UpdateTranslationAsync(translation, cancellationToken);
         logger.LogInformation("Translation processing completed for ID: {TranslationId} with status: {Status}", translationId, translation.Status);
     }
 }
