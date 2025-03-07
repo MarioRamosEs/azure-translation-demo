@@ -14,30 +14,26 @@ public static class IServiceCollectionExtensions
 {
     public static IServiceCollection AddTableStorageServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Options configuration
-        services.Configure<TableStorageOptions>(configuration.GetSection("TableStorage"));
+        services.AddOptionsWithValidateOnStart<TableStorageOptions>().Bind(configuration.GetSection(nameof(TableStorageOptions))).ValidateDataAnnotations();
 
-        // Azure Services
         services.AddAzureClients(builder =>
         {
-            // Table Storage
-            builder.AddTableServiceClient(configuration.GetConnectionString("TableStorage"));
+            builder.AddTableServiceClient(configuration.GetConnectionString("StorageAccount"));
         });
 
         return services;
     }
 
-    public static IServiceCollection AddServiceBusServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAzureBusServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Options configuration
-        services.Configure<ServiceBusOptions>(configuration.GetSection("ServiceBus"));
+        services.AddOptionsWithValidateOnStart<ServiceBusOptions>().Bind(configuration.GetSection(nameof(ServiceBusOptions))).ValidateDataAnnotations();
 
-        // Azure Services
         services.AddAzureClients(builder =>
         {
-            // Service Bus
             builder.AddServiceBusClient(configuration.GetConnectionString("ServiceBus"));
         });
+
+        services.AddScoped<IMessageBusService, AzureServiceBusService>();
 
         return services;
     }

@@ -82,7 +82,7 @@ builder.Services.AddTranslationService();
 
 // External Services
 builder.Services.AddTableStorageServices(builder.Configuration);
-builder.Services.AddServiceBusServices(builder.Configuration);
+builder.Services.AddAzureBusServices(builder.Configuration);
 builder.Services.AddTableStorageTranslationRepository();
 builder.Services.AddAzureCognitiveLanguageServices();
 

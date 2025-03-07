@@ -14,10 +14,7 @@ internal sealed class AzureServiceBusService : IMessageBusService, IAsyncDisposa
     private readonly ServiceBusSender serviceBusSender;
     private readonly ILogger<AzureServiceBusService> logger;
 
-    public AzureServiceBusService(
-        ServiceBusClient serviceBusClient,
-        IOptions<ServiceBusOptions> options,
-        ILogger<AzureServiceBusService> logger)
+    public AzureServiceBusService(ServiceBusClient serviceBusClient,IOptions<ServiceBusOptions> options, ILogger<AzureServiceBusService> logger)
     {
         serviceBusSender = serviceBusClient!.CreateSender(options.Value.QueueName);
         this.logger = logger;
