@@ -54,8 +54,77 @@ internal sealed class TranslationService : ITranslationService
     }
 
     /// <inheritdoc />
-    public Task<TranslationDto> GetTranslationAsync(string translationId, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task<TranslationDto?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Getting translation with ID: {TranslationId}", translationId);
+
+        var entity = await translationRepository.GetTranslationAsync(translationId, cancellationToken);
+
+        if (entity == null)
+        {
+            logger.LogWarning("Translation with ID {TranslationId} not found", translationId);
+            return null;
+        }
+
+        return new TranslationDto
+        {
+            Id = entity.RowKey,
+            OriginalText = entity.OriginalText,
+            TranslatedText = entity.TranslatedText,
+            DetectedLanguage = entity.DetectedLanguage,
+            Status = Enum.Parse<TranslationStatus>(entity.Status),
+            ErrorMessage = entity.ErrorMessage,
+            CreatedAt = entity.CreatedAt,
+            CompletedAt = entity.CompletedAt,
+        };
+    }
 
     /// <inheritdoc />
-    public Task ProcessTranslationAsync(string translationId, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public async Task ProcessTranslationAsync(string translationId, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Processing translation with ID: {TranslationId}", translationId);
+
+        var translation = await translationRepository.GetTranslationAsync(translationId, cancellationToken);
+
+        if (translation == null)
+        {
+            logger.LogWarning("Translation with ID {TranslationId} not found for processing", translationId);
+            return;
+        }
+
+        try
+        {
+            // Detect language
+            translation.DetectedLanguage = await languageDetectionService.DetectLanguageAsync(translation.OriginalText, cancellationToken);
+
+            // Translate if not Spanish
+            if (translation.DetectedLanguage != "es")
+            {
+                translation.TranslatedText = await textTranslationService.TranslateToSpanishAsync(
+                    translation.OriginalText,
+                    translation.DetectedLanguage,
+                    cancellationToken);
+            }
+            else
+            {
+                // If already Spanish, no translation needed
+                translation.TranslatedText = translation.OriginalText;
+            }
+
+            // Update with success status
+            translation.Status = TranslationStatus.Completed.ToString();
+            translation.CompletedAt = DateTime.UtcNow;
+
+            await translationRepository.UpdateTranslationAsync(translation, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing translation with ID: {TranslationId}", translationId);
+            translation.Status = TranslationStatus.Failed.ToString();
+            translation.ErrorMessage = ex.Message;
+        }
+
+        await translationRepository.UpdateTranslationAsync(translation, cancellationToken);
+        logger.LogInformation("Translation processing completed for ID: {TranslationId} with status: {Status}", translationId, translation.Status);
+    }
 }

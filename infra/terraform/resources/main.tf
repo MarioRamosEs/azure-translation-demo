@@ -79,8 +79,7 @@ resource "azurerm_servicebus_namespace" "servicebus" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "Basic"
-
-  tags = local.tags
+  tags                = local.tags
 
   lifecycle {
     ignore_changes = [
@@ -92,6 +91,22 @@ resource "azurerm_servicebus_namespace" "servicebus" {
 resource "azurerm_servicebus_queue" "servicebus_queue" {
   name         = local.name_servicebus_queue
   namespace_id = azurerm_servicebus_namespace.servicebus.id
+}
+
+// TODO Refactor in a module
+resource "azurerm_cognitive_account" "this" {
+  name                = "trsl-azure-translation-${var.suffix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  kind                = "TextTranslation"
+  tags                = local.tags
+  sku_name            = "F0"
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 module "kv" {
@@ -117,6 +132,14 @@ module "kv" {
       name  = "ConnectionStrings:ServiceBus"
       value = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
     },
+    {
+      name  = "TranslatorOptions:Key"
+      value = azurerm_cognitive_account.this.primary_access_key
+    },
+    {
+      name  = "TranslatorOptions:Endpoint"
+      value = azurerm_cognitive_account.this.endpoint
+    }
   ]
 }
 
@@ -149,6 +172,11 @@ module "appcs" {
         label = var.appcs_label
         key   = "TableStorageOptions:TranslationsTableName"
         value = var.translations_table_name
+      },
+      {
+        label = var.appcs_label
+        key   = "TranslatorOptions:Region"
+        value = var.location
       },
   ])
 }

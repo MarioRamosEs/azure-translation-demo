@@ -1,4 +1,6 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System.Text.Json;
+
+using Azure.Messaging.ServiceBus;
 
 using AzureTranslation.Core.Interfaces;
 using AzureTranslation.Infrastructure.Options;
@@ -14,7 +16,7 @@ internal sealed class AzureServiceBusService : IMessageBusService, IAsyncDisposa
     private readonly ServiceBusSender serviceBusSender;
     private readonly ILogger<AzureServiceBusService> logger;
 
-    public AzureServiceBusService(ServiceBusClient serviceBusClient,IOptions<ServiceBusOptions> options, ILogger<AzureServiceBusService> logger)
+    public AzureServiceBusService(ServiceBusClient serviceBusClient, IOptions<ServiceBusOptions> options, ILogger<AzureServiceBusService> logger)
     {
         serviceBusSender = serviceBusClient!.CreateSender(options.Value.QueueName);
         this.logger = logger;
@@ -24,8 +26,12 @@ internal sealed class AzureServiceBusService : IMessageBusService, IAsyncDisposa
     {
         try
         {
-            var message = new ServiceBusMessage()
+            var payload = new { translationId };
+            var jsonBody = JsonSerializer.Serialize(payload);
+
+            var message = new ServiceBusMessage(jsonBody)
             {
+                ContentType = "application/json",
                 MessageId = translationId,
                 CorrelationId = translationId,
             };
