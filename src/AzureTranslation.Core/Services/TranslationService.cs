@@ -40,7 +40,7 @@ internal sealed class TranslationService : ITranslationService
         {
             RowKey = translationId,
             OriginalText = text,
-            Status = TranslationStatus.Pending.ToString(),
+            Status = TranslationStatus.Pending,
             CreatedAt = DateTime.UtcNow,
         };
 
@@ -53,7 +53,7 @@ internal sealed class TranslationService : ITranslationService
     }
 
     /// <inheritdoc />
-    public async Task<TranslationDto?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
+    public async Task<Translation?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting translation with ID: {TranslationId}", translationId);
 
@@ -65,13 +65,13 @@ internal sealed class TranslationService : ITranslationService
             return null;
         }
 
-        return new TranslationDto
+        return new Translation
         {
             Id = entity.RowKey,
             OriginalText = entity.OriginalText,
             TranslatedText = entity.TranslatedText,
             DetectedLanguage = entity.DetectedLanguage,
-            Status = Enum.Parse<TranslationStatus>(entity.Status),
+            Status = entity.Status,
             ErrorMessage = entity.ErrorMessage,
             CreatedAt = entity.CreatedAt,
             CompletedAt = entity.CompletedAt,
@@ -91,7 +91,7 @@ internal sealed class TranslationService : ITranslationService
             return;
         }
 
-        if (translation.Status != TranslationStatus.Pending.ToString())
+        if (translation.Status != TranslationStatus.Pending)
         {
             logger.LogWarning("Translation with ID {TranslationId} is not in pending status. Current status: {Status}", translationId, translation.Status);
             return;
@@ -118,7 +118,7 @@ internal sealed class TranslationService : ITranslationService
             }
 
             // Update with success status
-            translation.Status = TranslationStatus.Completed.ToString();
+            translation.Status = TranslationStatus.Completed;
             translation.CompletedAt = DateTime.UtcNow;
 
             await translationRepository.UpdateTranslationAsync(translation, cancellationToken);
@@ -126,7 +126,7 @@ internal sealed class TranslationService : ITranslationService
         catch (Exception ex)
         {
             logger.LogError(ex, "Error processing translation with ID: {TranslationId}", translationId);
-            translation.Status = TranslationStatus.Failed.ToString();
+            translation.Status = TranslationStatus.Failed;
             translation.ErrorMessage = ex.Message;
         }
 

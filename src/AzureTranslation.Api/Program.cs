@@ -21,7 +21,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
-// Load Configuration
+/* Load Configuration */
+
 if (Debugger.IsAttached)
 {
     builder.Configuration.AddJsonFile(@"appsettings.debug.json", optional: true, reloadOnChange: true);
@@ -74,6 +75,8 @@ if (Debugger.IsAttached)
     builder.Logging.AddDebug();
 }
 
+builder.AddServiceDefaults();
+
 // Internal Services
 builder.Services.AddTranslationService();
 builder.Services.AddTableStorageTranslationRepository();
@@ -83,38 +86,34 @@ builder.Services.AddTableStorageServices(builder.Configuration);
 builder.Services.AddAzureBusServices(builder.Configuration);
 builder.Services.AddAzureCognitiveLanguageServices(builder.Configuration); // No deberiamos necesitar poner esto aqui
 
-// Application Services
-builder.AddServiceDefaults();
-
 builder.Services.AddHealthChecks();
 
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddProblemDetails()
-                .AddRouting()
-                .AddApiVersioning(options =>
-                {
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.ReportApiVersions = true;
-                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
-                    options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
-                })
-                ;
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
+});
 
-// Application Middleware Configuration
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
-app.MapOpenApi();
-app.UseSwaggerUI(options =>
+if (app.Environment.IsDevelopment())
 {
-    options.SwaggerEndpoint($@"/openapi/v1.json", assemblyName);
-});
+    app.MapOpenApi();
+}
 
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();

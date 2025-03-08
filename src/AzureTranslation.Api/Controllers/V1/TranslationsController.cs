@@ -82,7 +82,7 @@ public class TranslationsController : ControllerBase
     /// <response code="404">If the translation with the specified ID is not found.</response>
     /// <response code="500">If an unexpected error occurs during retrieval.</response>
     [HttpGet("{translationId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TranslationDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Translation))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetTranslation([FromRoute] string translationId, CancellationToken cancellationToken)

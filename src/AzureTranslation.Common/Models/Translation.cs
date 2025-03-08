@@ -4,7 +4,7 @@ using AzureTranslation.Common.Enums;
 
 namespace AzureTranslation.Common.Models;
 
-public class TranslationDto
+public class Translation
 {
     public string Id { get; set; }
 
