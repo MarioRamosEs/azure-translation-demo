@@ -23,11 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.ServiceDef
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Function", "src\AzureTranslation.Function\AzureTranslation.Function.csproj", "{4DEF276B-5E5F-32DD-D090-8780FF0EC704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Core", "src\AzureTranslation.Commons\AzureTranslation.Core.csproj", "{A99671CC-6346-425C-5189-C0E5FEFE57AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Core", "src\AzureTranslation.Core\AzureTranslation.Core.csproj", "{A99671CC-6346-425C-5189-C0E5FEFE57AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Common", "src\AzureTranslation.Common\AzureTranslation.Common.csproj", "{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Infrastructure", "AzureTranslation.Infrastructure\AzureTranslation.Infrastructure.csproj", "{55E82223-3434-4CCF-9F16-C1A894ACC1A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Infrastructure", "src\AzureTranslation.Infrastructure\AzureTranslation.Infrastructure.csproj", "{55E82223-3434-4CCF-9F16-C1A894ACC1A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

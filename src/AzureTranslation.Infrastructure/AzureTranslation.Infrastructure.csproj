@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\AzureTranslation.Commons\AzureTranslation.Core.csproj" />
+    <ProjectReference Include="..\AzureTranslation.Core\AzureTranslation.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

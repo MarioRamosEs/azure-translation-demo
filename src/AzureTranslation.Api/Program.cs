@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 
 using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 
 using Azure.Identity;
 
