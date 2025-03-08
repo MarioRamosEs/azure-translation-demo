@@ -191,4 +191,69 @@ module "appcs" {
   ])
 }
 
+// App Service Plan para hospedar API y Function en Linux
+module "asp" {
+  source              = "./modules/asp"
+  name                = "asp-azure-translation-${var.suffix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  os_type             = "Linux"
+  sku_name            = "B1" // Considerar P1v2 o superior para producción
+  tags                = local.tags
+}
+
+// App Service para la API
+module "app" {
+  source              = "./modules/app"
+  name                = "app-azure-translation-2-${var.suffix}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  app_service_plan_id = module.asp.id
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY"         = module.appi.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"  = module.appi.connection_string
+    "WEBSITE_RUN_FROM_PACKAGE"               = 1
+    "AZURE_CLIENT_ID"                        = module.mi.client_id
+    "ConnectionStrings__ApplicationInsights" = module.appi.connection_string
+  }
+  https_only           = true
+  ftps_state           = "Disabled"
+  always_on            = true
+  identity_type        = "UserAssigned"
+  identity_ids         = [module.mi.id]
+  app_configuration_id = module.appcs.id
+  linux_fx_version     = "DOTNETCORE|9.0"
+  tags                 = local.tags
+}
+
+// Function App para el procesamiento asíncrono
+module "func" {
+  source               = "./modules/func"
+  name                 = "func-azure-translation-2-${var.suffix}"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rg.name
+  app_service_plan_id  = module.asp.id
+  storage_account_name = module.st.name
+  storage_account_key  = module.st.primary_access_key
+  app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY"         = module.appi.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"  = module.appi.connection_string
+    "WEBSITE_RUN_FROM_PACKAGE"               = 1
+    "AZURE_CLIENT_ID"                        = module.mi.client_id
+    "FUNCTIONS_EXTENSION_VERSION"            = "~4"
+    "FUNCTIONS_WORKER_RUNTIME"               = "dotnet-isolated"
+    "ConnectionStrings__ApplicationInsights" = module.appi.connection_string
+    "AzureWebJobsStorage"                    = module.st.connection_string
+    "ServiceBusOptions__QueueName"           = azurerm_servicebus_queue.servicebus_queue.name
+    "ConnectionStrings__ServiceBus"          = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
+  }
+  https_only           = true
+  ftps_state           = "Disabled"
+  identity_type        = "UserAssigned"
+  identity_ids         = [module.mi.id]
+  app_configuration_id = module.appcs.id
+  os_type              = "linux"
+  tags                 = local.tags
+}
+
 
