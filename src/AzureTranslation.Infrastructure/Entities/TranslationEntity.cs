@@ -3,7 +3,7 @@ using Azure.Data.Tables;
 
 using AzureTranslation.Common.Models;
 
-namespace AzureTranslation.Core.Entities;
+namespace AzureTranslation.Infrastructure.Entities;
 
 public class TranslationEntity : Translation, ITableEntity
 {
@@ -26,7 +26,7 @@ public class TranslationEntity : Translation, ITableEntity
             Status = Status,
             ErrorMessage = ErrorMessage,
             CreatedAt = CreatedAt,
-            CompletedAt = CompletedAt
+            CompletedAt = CompletedAt,
         };
     }
 
@@ -42,7 +42,7 @@ public class TranslationEntity : Translation, ITableEntity
             Status = translation.Status,
             ErrorMessage = translation.ErrorMessage,
             CreatedAt = translation.CreatedAt,
-            CompletedAt = translation.CompletedAt
+            CompletedAt = translation.CompletedAt,
         };
     }
 }

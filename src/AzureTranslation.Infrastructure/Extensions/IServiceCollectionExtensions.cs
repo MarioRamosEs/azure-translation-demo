@@ -1,7 +1,6 @@
 ﻿using Azure;
 
 using AzureTranslation.Core.Interfaces;
-using AzureTranslation.Core.Services;
 using AzureTranslation.Infrastructure.Options;
 using AzureTranslation.Infrastructure.Repositories;
 using AzureTranslation.Infrastructure.Services;

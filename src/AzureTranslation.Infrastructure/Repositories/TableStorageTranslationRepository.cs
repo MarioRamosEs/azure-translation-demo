@@ -1,8 +1,9 @@
 ﻿using Azure;
 using Azure.Data.Tables;
 
-using AzureTranslation.Core.Entities;
+using AzureTranslation.Common.Models;
 using AzureTranslation.Core.Interfaces;
+using AzureTranslation.Infrastructure.Entities;
 using AzureTranslation.Infrastructure.Options;
 
 using Microsoft.Extensions.Logging;
@@ -23,13 +24,13 @@ internal sealed class TableStorageTranslationRepository : ITranslationRepository
         this.logger = logger;
     }
 
-    public async Task CreateTranslationAsync(TranslationEntity translation, CancellationToken cancellationToken)
+    public async Task CreateTranslationAsync(Translation translation, CancellationToken cancellationToken)
     {
         try
         {
-            translation.PartitionKey = PartitionKey;
-            translation.RowKey = translation.Id;
-            await tableClient.AddEntityAsync(translation, cancellationToken: cancellationToken);
+            var translationEntity = TranslationEntity.FromTranslation(translation);
+            translationEntity.PartitionKey = PartitionKey;
+            await tableClient.AddEntityAsync(translationEntity, cancellationToken: cancellationToken);
             logger.LogInformation("Translation with ID {TranslationId} created successfully", translation.Id);
         }
         catch (RequestFailedException ex)
@@ -39,13 +40,12 @@ internal sealed class TableStorageTranslationRepository : ITranslationRepository
         }
     }
 
-    public async Task<TranslationEntity?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
+    public async Task<Translation?> GetTranslationAsync(string translationId, CancellationToken cancellationToken)
     {
         try
         {
             var response = await tableClient.GetEntityAsync<TranslationEntity>(PartitionKey, translationId, cancellationToken: cancellationToken);
-
-            return response.Value;
+            return response.Value.ToTranslation();
         }
         catch (RequestFailedException ex) when (ex.Status == 404)
         {
@@ -59,14 +59,14 @@ internal sealed class TableStorageTranslationRepository : ITranslationRepository
         }
     }
 
-    public async Task UpdateTranslationAsync(TranslationEntity translation, CancellationToken cancellationToken)
+    public async Task UpdateTranslationAsync(Translation translation, CancellationToken cancellationToken)
     {
         try
         {
-            translation.PartitionKey = PartitionKey;
-            translation.RowKey = translation.Id;
+            var translationEntity = TranslationEntity.FromTranslation(translation);
+            translationEntity.PartitionKey = PartitionKey;
 
-            await tableClient.UpdateEntityAsync(translation, translation.ETag, cancellationToken: cancellationToken);
+            await tableClient.UpdateEntityAsync(translationEntity, ETag.All, cancellationToken: cancellationToken);
 
             logger.LogInformation("Translation with ID {TranslationId} updated successfully", translation.Id);
         }

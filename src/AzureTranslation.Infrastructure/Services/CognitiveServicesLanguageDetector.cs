@@ -4,7 +4,7 @@ using AzureTranslation.Core.Interfaces;
 
 using Microsoft.Extensions.Logging;
 
-namespace AzureTranslation.Core.Services;
+namespace AzureTranslation.Infrastructure.Services;
 
 internal sealed class CognitiveServicesLanguageDetector : ILanguageDetectionService
 {

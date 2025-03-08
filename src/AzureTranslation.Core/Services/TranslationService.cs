@@ -1,6 +1,5 @@
 ﻿using AzureTranslation.Common.Enums;
 using AzureTranslation.Common.Models;
-using AzureTranslation.Core.Entities;
 using AzureTranslation.Core.Interfaces;
 
 using Microsoft.Extensions.Logging;
@@ -42,7 +41,7 @@ internal sealed class TranslationService : ITranslationService
             CreatedAt = DateTime.UtcNow,
         };
 
-        await translationRepository.CreateTranslationAsync(TranslationEntity.FromTranslation(translation), cancellationToken);
+        await translationRepository.CreateTranslationAsync(translation, cancellationToken);
         await messageBusService.SendTranslationMessageAsync(translation.Id, cancellationToken);
 
         logger.LogInformation("Translation request created with ID: {TranslationId}", translation.Id);
@@ -63,7 +62,7 @@ internal sealed class TranslationService : ITranslationService
             return null;
         }
 
-        return entity.ToTranslation();
+        return entity;
     }
 
     /// <inheritdoc />
