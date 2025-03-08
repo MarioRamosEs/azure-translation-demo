@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureTranslation.Function;
 
+/// <summary>
+/// Function to process translation requests.
+/// </summary>
 public class TranslationProcessor
 {
     private readonly ITranslationProcessor translationProcessor;
@@ -25,6 +28,13 @@ public class TranslationProcessor
         this.logger = logger;
     }
 
+    /// <summary>
+    /// Processes a translation request.
+    /// </summary>
+    /// <param name="message">The message to process.</param>
+    /// <param name="messageActions">The message actions.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Function(nameof(TranslationProcessor))]
     public async Task Run(
         [ServiceBusTrigger("sbq-translation-requests-mr", Connection = "ServiceBus")] // TODO: Set queue name by configuration

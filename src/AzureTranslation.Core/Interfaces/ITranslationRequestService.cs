@@ -3,23 +3,23 @@
 namespace AzureTranslation.Core.Interfaces;
 
 /// <summary>
-/// Servicio para gestionar solicitudes de traducción desde la API
+/// Service for managing translation requests from the API.
 /// </summary>
-public interface ITranslationRequestService // TODO ingles
+public interface ITranslationRequestService
 {
     /// <summary>
-    /// Crea una solicitud de traducción y la encola para procesamiento asíncrono
+    /// Creates a translation request and queues it for asynchronous processing.
     /// </summary>
-    /// <param name="text">Texto original para traducir</param>
-    /// <param name="cancellationToken">Token de cancelación</param>
-    /// <returns>La entidad de traducción creada</returns>
+    /// <param name="text">Original text to translate.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The created translation entity.</returns>
     Task<Translation> CreateTranslationRequestAsync(string text, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Recupera una traducción existente por su ID
+    /// Retrieves an existing translation by its ID.
     /// </summary>
-    /// <param name="translationId">ID de la traducción</param>
-    /// <param name="cancellationToken">Token de cancelación</param>
-    /// <returns>La entidad de traducción o null si no existe</returns>
+    /// <param name="translationId">ID of the translation.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The translation entity or null if it doesn't exist.</returns>
     Task<Translation?> GetTranslationAsync(string translationId, CancellationToken cancellationToken);
 }

@@ -1,17 +1,15 @@
-﻿using AzureTranslation.Common.Models;
-
-namespace AzureTranslation.Core.Interfaces;
+﻿namespace AzureTranslation.Core.Interfaces;
 
 /// <summary>
-/// Servicio para procesar traducciones.
+/// Service for processing translations.
 /// </summary>
-public interface ITranslationProcessor // TODO in english
+public interface ITranslationProcessor
 {
     /// <summary>
-    /// Procesa una solicitud de traducción usando servicios de detección de idioma y traducción.
+    /// Processes a translation request using language detection and translation services.
     /// </summary>
-    /// <param name="translationId">ID de la traducción a procesar</param>
-    /// <param name="cancellationToken">Token de cancelación</param>
+    /// <param name="translationId">ID of the translation to process.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task ProcessTranslationAsync(string translationId, CancellationToken cancellationToken);
 }

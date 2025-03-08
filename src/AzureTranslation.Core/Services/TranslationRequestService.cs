@@ -6,12 +6,21 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureTranslation.Core.Services;
 
+/// <summary>
+/// Service for managing translation requests.
+/// </summary>
 internal sealed class TranslationRequestService : ITranslationRequestService
 {
     private readonly ITranslationRepository translationRepository;
     private readonly IMessageBusService messageBusService;
     private readonly ILogger<TranslationRequestService> logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TranslationRequestService"/> class.
+    /// </summary>
+    /// <param name="translationRepository">A valid <see cref="ITranslationRepository"/> instance.</param>
+    /// <param name="messageBusService">A valid <see cref="IMessageBusService"/> instance.</param>
+    /// <param name="logger">The logger.</param>
     public TranslationRequestService(
             ITranslationRepository translationRepository,
             IMessageBusService messageBusService,

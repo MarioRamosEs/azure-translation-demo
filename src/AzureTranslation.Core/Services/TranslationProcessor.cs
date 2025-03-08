@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AzureTranslation.Core.Services;
 
+/// <summary>
+/// Service for processing translations.
+/// </summary>
 internal sealed class TranslationProcessor : ITranslationProcessor
 {
     private readonly ITranslationRepository translationRepository;
@@ -12,6 +15,13 @@ internal sealed class TranslationProcessor : ITranslationProcessor
     private readonly ITextTranslationService textTranslationService;
     private readonly ILogger<TranslationProcessor> logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TranslationProcessor"/> class.
+    /// </summary>
+    /// <param name="translationRepository">A valid <see cref="ITranslationRepository"/> instance.</param>
+    /// <param name="languageDetectionService">A valid <see cref="ILanguageDetectionService"/> instance.</param>
+    /// <param name="textTranslationService">A valid <see cref="ITextTranslationService"/> instance.</param>
+    /// <param name="logger">The logger.</param>
     public TranslationProcessor(
             ITranslationRepository translationRepository,
             ILanguageDetectionService languageDetectionService,

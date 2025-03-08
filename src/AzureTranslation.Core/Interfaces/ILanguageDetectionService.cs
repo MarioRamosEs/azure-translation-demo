@@ -1,5 +1,8 @@
 ﻿namespace AzureTranslation.Core.Interfaces;
 
+/// <summary>
+/// Provides methods to detect the language of a given text.
+/// </summary>
 public interface ILanguageDetectionService
 {
     /// <summary>
