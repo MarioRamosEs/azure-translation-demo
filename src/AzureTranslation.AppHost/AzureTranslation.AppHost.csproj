@@ -12,14 +12,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.1.0" />
+    <PackageReference Include="Aspire.Hosting.Azure.Functions" Version="9.1.0-preview.1.25121.10" />
     <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureTranslation.Api\AzureTranslation.Api.csproj" />
+    <ProjectReference Include="..\AzureTranslation.Api\AzureTranslation.API.csproj" />
+    <ProjectReference Include="..\AzureTranslation.Function\AzureTranslation.Function.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="CommunityToolkit.Diagnostics" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

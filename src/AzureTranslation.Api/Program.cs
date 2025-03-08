@@ -5,6 +5,9 @@ using Asp.Versioning;
 using Azure.Identity;
 
 using AzureTranslation.Api;
+using AzureTranslation.Core.Extensions;
+using AzureTranslation.Infrastructure.Extensions;
+using AzureTranslation.ServiceDefaults;
 
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
@@ -74,6 +77,14 @@ if (Debugger.IsAttached)
 
 builder.AddServiceDefaults();
 
+// Internal Services
+builder.Services.AddTranslationRequestService();
+builder.Services.AddTableStorageTranslationRepository();
+
+// External Services
+builder.Services.AddTableStorageServices(builder.Configuration);
+builder.Services.AddAzureBusServices(builder.Configuration);
+
 builder.Services.AddHealthChecks();
 
 builder.Services.AddControllers();
@@ -81,12 +92,12 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddApiVersioning(options =>
-                 {
-                     options.AssumeDefaultVersionWhenUnspecified = true;
-                     options.ReportApiVersions = true;
-                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
-                     options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
-                 });
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
+});
 
 var app = builder.Build();
 

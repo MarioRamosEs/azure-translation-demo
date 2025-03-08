@@ -15,11 +15,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[ Solution Items ]", "[ Sol
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Api", "src\AzureTranslation.Api\AzureTranslation.Api.csproj", "{2AE839F5-AE2E-317B-72F8-CF1965FC6471}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.API", "src\AzureTranslation.Api\AzureTranslation.API.csproj", "{2AE839F5-AE2E-317B-72F8-CF1965FC6471}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.AppHost", "src\AzureTranslation.AppHost\AzureTranslation.AppHost.csproj", "{BAA3FDA0-7D7D-4616-8A7E-38325BC0F8B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.ServiceDefaults", "src\AzureTranslation.ServiceDefaults\AzureTranslation.ServiceDefaults.csproj", "{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Function", "src\AzureTranslation.Function\AzureTranslation.Function.csproj", "{4DEF276B-5E5F-32DD-D090-8780FF0EC704}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Core", "src\AzureTranslation.Core\AzureTranslation.Core.csproj", "{A99671CC-6346-425C-5189-C0E5FEFE57AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Common", "src\AzureTranslation.Common\AzureTranslation.Common.csproj", "{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTranslation.Infrastructure", "src\AzureTranslation.Infrastructure\AzureTranslation.Infrastructure.csproj", "{55E82223-3434-4CCF-9F16-C1A894ACC1A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +47,22 @@ Global
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5743E7-BA1F-2C10-5025-6CCFB41F3CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEF276B-5E5F-32DD-D090-8780FF0EC704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A99671CC-6346-425C-5189-C0E5FEFE57AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99671CC-6346-425C-5189-C0E5FEFE57AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99671CC-6346-425C-5189-C0E5FEFE57AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99671CC-6346-425C-5189-C0E5FEFE57AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D6BC16-A3CF-4E4F-A7ED-9221CBE4C065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E82223-3434-4CCF-9F16-C1A894ACC1A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E82223-3434-4CCF-9F16-C1A894ACC1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E82223-3434-4CCF-9F16-C1A894ACC1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E82223-3434-4CCF-9F16-C1A894ACC1A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
