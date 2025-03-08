@@ -59,16 +59,10 @@ variable "app_configuration_id" {
   description = "The ID of the App Configuration"
 }
 
-variable "linux_fx_version" {
-  type        = string
-  description = "The Linux FX Version"
-  default     = "DOTNETCORE|9.0"
-}
-
 variable "app_command_line" {
   type        = string
   description = "The app command line to launch"
-  default     = ""
+  nullable    = false
 }
 
 variable "tags" {
