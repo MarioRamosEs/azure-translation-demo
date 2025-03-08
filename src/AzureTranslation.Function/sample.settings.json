@@ -4,8 +4,8 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
 
     "ConnectionStrings:AppConfig":  "",
-    "AzureWebJobsStorage": "", // TODO: Load from KeyVault
-    "ConnectionStrings:ServiceBus": "", // TODO: Load from KeyVault
-    "ServiceBusOptions:QueueName": "" // TODO: Load from KeyVault
+    "AzureWebJobsStorage": "",
+    "ConnectionStrings:ServiceBus": "",
+    "ServiceBusOptions:QueueName": ""
   }
 }

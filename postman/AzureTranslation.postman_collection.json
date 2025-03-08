@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "b839c06e-651c-434c-9949-79a05f75c534",
+		"name": "AzureTranslation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5419502"
+	},
+	"item": [
+		{
+			"name": "Translation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"OriginalText\": \"Good morning, my name is Mario\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/translations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"translations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Translation",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"OriginalText\": \"Moshi moshi!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/translations/2988f468-0dd0-4b69-90ed-ef1fa36db23f",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"translations",
+						"2988f468-0dd0-4b69-90ed-ef1fa36db23f"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

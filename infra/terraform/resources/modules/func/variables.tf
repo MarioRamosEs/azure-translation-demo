@@ -58,15 +58,22 @@ variable "identity_ids" {
   default     = []
 }
 
-variable "app_configuration_id" {
-  type        = string
-  description = "The ID of the App Configuration"
-}
-
 variable "os_type" {
   type        = string
   description = "The OS type for the Function App"
   default     = "linux"
+}
+
+variable "app_configuration_connection_string" {
+  type        = string
+  description = "The connection string for the App Configuration"
+  nullable    = false
+}
+
+variable "service_bus_connection_string" {
+  type        = string
+  description = "The connection string for the Service Bus"
+  nullable    = false
 }
 
 variable "tags" {

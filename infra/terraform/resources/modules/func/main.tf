@@ -7,24 +7,42 @@ resource "azurerm_linux_function_app" "func" {
   storage_account_access_key = var.storage_account_key
   https_only                 = var.https_only
   app_settings               = var.app_settings
-  
+  tags                       = var.tags
+
   site_config {
-    ftps_state              = var.ftps_state
+    ftps_state                             = var.ftps_state
+    always_on                              = true
+    application_insights_key               = lookup(var.app_settings, "APPINSIGHTS_INSTRUMENTATIONKEY", null)
+    application_insights_connection_string = lookup(var.app_settings, "APPLICATIONINSIGHTS_CONNECTION_STRING", null)
+    minimum_tls_version                    = "1.2"
+
     application_stack {
-      dotnet_version        = "9.0"
+      dotnet_version              = "9.0"
       use_dotnet_isolated_runtime = true
     }
-    application_insights_key = lookup(var.app_settings, "APPINSIGHTS_INSTRUMENTATIONKEY", null)
-    application_insights_connection_string = lookup(var.app_settings, "APPLICATIONINSIGHTS_CONNECTION_STRING", null)
-    minimum_tls_version     = "1.2"
+
+    app_service_logs {
+      disk_quota_mb         = 35
+      retention_period_days = 7
+    }
+  }
+
+  connection_string {
+    name  = "AppConfig"
+    type  = "Custom"
+    value = var.app_configuration_connection_string
+  }
+
+  connection_string {
+    name  = "ServiceBus"
+    type  = "ServiceBus"
+    value = var.service_bus_connection_string
   }
 
   identity {
     type         = var.identity_type
     identity_ids = var.identity_ids
   }
-  
-  tags = var.tags
 
   lifecycle {
     ignore_changes = [

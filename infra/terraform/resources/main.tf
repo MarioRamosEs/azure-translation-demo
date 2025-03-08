@@ -62,7 +62,6 @@ resource "azurerm_storage_table" "translations" {
   storage_account_name = module.st.name
 }
 
-// TODO Refactor in a module
 resource "azurerm_servicebus_namespace" "servicebus" {
   name                = "sbns-azure-translation-${var.suffix}"
   location            = var.location
@@ -83,7 +82,6 @@ resource "azurerm_servicebus_queue" "servicebus_queue" {
   lock_duration = "PT5M"
 }
 
-// TODO Refactor in a module
 resource "azurerm_cognitive_account" "translation" {
   name                = "trsl-azure-translation-${var.suffix}"
   location            = var.location
@@ -219,34 +217,33 @@ module "app" {
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = module.appi.connection_string
     "WEBSITE_RUN_FROM_PACKAGE"              = 1
     "AZURE_CLIENT_ID"                       = module.mi.client_id
-
-    //"ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
   }
 }
 
 module "func" {
-  source               = "./modules/func"
-  name                 = "func-azure-translation-2-${var.suffix}"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.rg.name
-  app_service_plan_id  = module.asp.id
-  storage_account_name = module.st.name
-  storage_account_key  = module.st.primary_access_key
-  identity_type        = "UserAssigned"
-  identity_ids         = [module.mi.id]
-  app_configuration_id = module.appcs.id
-  tags                 = local.tags
+  source                              = "./modules/func"
+  name                                = "func-azure-translation-2-${var.suffix}"
+  location                            = var.location
+  resource_group_name                 = azurerm_resource_group.rg.name
+  app_service_plan_id                 = module.asp.id
+  storage_account_name                = module.st.name
+  storage_account_key                 = module.st.primary_access_key
+  identity_type                       = "UserAssigned"
+  identity_ids                        = [module.mi.id]
+  app_configuration_connection_string = module.appcs.primary_read_key_connection_string
+  service_bus_connection_string       = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
+  tags                                = local.tags
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"        = module.appi.instrumentation_key
-    "APPLICATIONINSIGHTS_CONNECTION_STRING" = module.appi.connection_string
-    "WEBSITE_RUN_FROM_PACKAGE"              = 1
-    "AZURE_CLIENT_ID"                       = module.mi.client_id
-    "FUNCTIONS_EXTENSION_VERSION"           = "~4"
-    "FUNCTIONS_WORKER_RUNTIME"              = "dotnet-isolated"
+    "APPINSIGHTS_INSTRUMENTATIONKEY"         = module.appi.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"  = module.appi.connection_string
+    "WEBSITE_RUN_FROM_PACKAGE"               = 1
+    "AZURE_CLIENT_ID"                        = module.mi.client_id
+    "WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED" = 1
+    "FUNCTIONS_EXTENSION_VERSION"            = "~4"
+    "FUNCTIONS_WORKER_RUNTIME"               = "dotnet-isolated"
 
-    "ConnectionStrings__AppConfig"  = module.appcs.primary_read_key_connection_string
     "AzureWebJobsStorage"           = module.st.connection_string
-    "ServiceBusOptions__QueueName"  = azurerm_servicebus_queue.servicebus_queue.name
     "ConnectionStrings__ServiceBus" = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
+    "ServiceBusOptions__QueueName"  = azurerm_servicebus_queue.servicebus_queue.name
   }
 }
