@@ -7,10 +7,13 @@ namespace AzureTranslation.Core.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-    public static IServiceCollection AddTranslationService(this IServiceCollection services)
+    public static IServiceCollection AddTranslationRequestService(this IServiceCollection services)
     {
-        services.AddScoped<ITranslationService, TranslationService>(); // TODO ver si esto tiene que ser Scoped
+        return services.AddScoped<ITranslationRequestService, TranslationRequestService>();
+    }
 
-        return services;
+    public static IServiceCollection AddTranslationProcessingServices(this IServiceCollection services)
+    {
+        return services.AddScoped<ITranslationProcessor, TranslationProcessor>();
     }
 }

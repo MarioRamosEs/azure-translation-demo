@@ -47,13 +47,12 @@ var builder = new HostBuilder()
         services.AddAzureAppConfiguration();
 
         // Internal Services
-        services.AddTranslationService();
         services.AddTableStorageTranslationRepository();
+        services.AddTranslationProcessingServices();
 
         // External Services
         services.AddTableStorageServices(context.Configuration);
         services.AddAzureCognitiveLanguageServices(context.Configuration);
-        services.AddAzureBusServices(context.Configuration); // No necesitamos esto!!
     })
     .ConfigureFunctionsWebApplication()
     ;

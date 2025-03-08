@@ -18,7 +18,7 @@ namespace AzureTranslation.Api.Controllers.V1;
 [Produces(MediaTypeNames.Application.Json)]
 public class TranslationsController : ControllerBase
 {
-    private readonly ITranslationService translationService;
+    private readonly ITranslationRequestService translationRequestService;
     private readonly ILogger<TranslationsController> logger;
 
     /// <summary>
@@ -27,9 +27,9 @@ public class TranslationsController : ControllerBase
     /// <param name="translationService">The service responsible for translation operations.</param>
     /// <param name="logger">The logger used for logging controller operations.</param>
     /// <exception cref="ArgumentNullException">Thrown when either <paramref name="translationService"/> or <paramref name="logger"/> is null.</exception>
-    public TranslationsController(ITranslationService translationService, ILogger<TranslationsController> logger)
+    public TranslationsController(ITranslationRequestService translationService, ILogger<TranslationsController> logger)
     {
-        this.translationService = translationService;
+        this.translationRequestService = translationService;
         this.logger = logger;
     }
 
@@ -52,7 +52,7 @@ public class TranslationsController : ControllerBase
     {
         try
         {
-            var translation = await translationService.CreateTranslationRequestAsync(request.OriginalText, cancellationToken);
+            var translation = await translationRequestService.CreateTranslationRequestAsync(request.OriginalText, cancellationToken);
 
             return AcceptedAtAction(
                 actionName: nameof(GetTranslation),
@@ -86,7 +86,7 @@ public class TranslationsController : ControllerBase
     {
         try
         {
-            var translation = await translationService.GetTranslationAsync(translationId, cancellationToken);
+            var translation = await translationRequestService.GetTranslationAsync(translationId, cancellationToken);
 
             if (translation == null)
             {

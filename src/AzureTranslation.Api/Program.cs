@@ -78,13 +78,12 @@ if (Debugger.IsAttached)
 builder.AddServiceDefaults();
 
 // Internal Services
-builder.Services.AddTranslationService();
+builder.Services.AddTranslationRequestService();
 builder.Services.AddTableStorageTranslationRepository();
 
 // External Services
 builder.Services.AddTableStorageServices(builder.Configuration);
 builder.Services.AddAzureBusServices(builder.Configuration);
-builder.Services.AddAzureCognitiveLanguageServices(builder.Configuration); // No deberiamos necesitar poner esto aqui
 
 builder.Services.AddHealthChecks();
 

@@ -11,7 +11,7 @@ namespace AzureTranslation.Function;
 
 public class TranslationProcessor
 {
-    private readonly ITranslationService translationService;
+    private readonly ITranslationProcessor translationProcessor;
     private readonly ILogger<TranslationProcessor> logger;
 
     /// <summary>
@@ -19,9 +19,9 @@ public class TranslationProcessor
     /// </summary>
     /// <param name="translationService">The translation service.</param>
     /// <param name="logger">The logger.</param>
-    public TranslationProcessor(ITranslationService translationService, ILogger<TranslationProcessor> logger)
+    public TranslationProcessor(ITranslationProcessor translationService, ILogger<TranslationProcessor> logger)
     {
-        this.translationService = translationService;
+        this.translationProcessor = translationService;
         this.logger = logger;
     }
 
@@ -38,7 +38,7 @@ public class TranslationProcessor
         {
             logger.LogInformation("Start processing translation with ID: {TranslationId}", message.MessageId);
 
-            await translationService.ProcessTranslationAsync(message.MessageId, cancellationToken);
+            await translationProcessor.ProcessTranslationAsync(message.MessageId, cancellationToken);
 
             logger.LogInformation("Finished processing translation with ID: {TranslationId}", message.MessageId);
 
