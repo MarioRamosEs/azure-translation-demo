@@ -19,6 +19,15 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
     ContentRootPath = Directory.GetCurrentDirectory(),
 });
 
+// Configure Kestrel to listen on port 8080 for Azure App Service, only in non-Development environments
+if (!builder.Environment.IsDevelopment())
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(8080); // Listen on port 8080 for web requests in production
+    });
+}
+
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
 /* Load Configuration */
