@@ -23,8 +23,18 @@ resource "azurerm_linux_web_app" "app" {
   }
 
   logs {
+    detailed_error_messages = false
+    failed_request_tracing  = false
+
     application_logs {
       file_system_level = "Information"
+    }
+
+    http_logs {
+      file_system {
+        retention_in_days = 7
+        retention_in_mb   = 35
+      }
     }
   }
 

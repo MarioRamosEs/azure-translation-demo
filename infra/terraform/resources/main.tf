@@ -191,7 +191,6 @@ module "appcs" {
   ])
 }
 
-// App Service Plan para hospedar API y Function en Linux
 module "asp" {
   source              = "./modules/asp"
   name                = "asp-azure-translation-${var.suffix}"
@@ -202,7 +201,6 @@ module "asp" {
   tags                = local.tags
 }
 
-// App Service para la API
 module "app" {
   source               = "./modules/app"
   name                 = "app-azure-translation-2-${var.suffix}"
@@ -210,20 +208,22 @@ module "app" {
   resource_group_name  = azurerm_resource_group.rg.name
   app_service_plan_id  = module.asp.id
   app_command_line     = "dotnet AzureTranslation.API.dll"
+  https_only           = true
   ftps_state           = "Disabled"
   identity_type        = "UserAssigned"
   identity_ids         = [module.mi.id]
   app_configuration_id = module.appcs.id
   tags                 = local.tags
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"         = module.appi.instrumentation_key
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"  = module.appi.connection_string
-    "AZURE_CLIENT_ID"                        = module.mi.client_id
-    "ConnectionStrings__ApplicationInsights" = module.appi.connection_string
+    "APPINSIGHTS_INSTRUMENTATIONKEY"        = module.appi.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = module.appi.connection_string
+    "WEBSITE_RUN_FROM_PACKAGE"              = 1
+    "AZURE_CLIENT_ID"                       = module.mi.client_id
+
+    "ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
   }
 }
 
-// Function App para el procesamiento asíncrono
 module "func" {
   source               = "./modules/func"
   name                 = "func-azure-translation-2-${var.suffix}"
@@ -237,16 +237,17 @@ module "func" {
   app_configuration_id = module.appcs.id
   tags                 = local.tags
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"         = module.appi.instrumentation_key
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"  = module.appi.connection_string
-    "WEBSITE_RUN_FROM_PACKAGE"               = 1
-    "AZURE_CLIENT_ID"                        = module.mi.client_id
-    "FUNCTIONS_EXTENSION_VERSION"            = "~4"
-    "FUNCTIONS_WORKER_RUNTIME"               = "dotnet-isolated"
-    "ConnectionStrings__ApplicationInsights" = module.appi.connection_string
-    "AzureWebJobsStorage"                    = module.st.connection_string
-    "ServiceBusOptions__QueueName"           = azurerm_servicebus_queue.servicebus_queue.name
-    "ConnectionStrings__ServiceBus"          = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
+    "APPINSIGHTS_INSTRUMENTATIONKEY"        = module.appi.instrumentation_key
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = module.appi.connection_string
+    "WEBSITE_RUN_FROM_PACKAGE"              = 1
+    "AZURE_CLIENT_ID"                       = module.mi.client_id
+    "FUNCTIONS_EXTENSION_VERSION"           = "~4"
+    "FUNCTIONS_WORKER_RUNTIME"              = "dotnet-isolated"
+
+    "ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
+    "AzureWebJobsStorage"                   = module.st.connection_string
+    "ServiceBusOptions__QueueName"          = azurerm_servicebus_queue.servicebus_queue.name
+    "ConnectionStrings__ServiceBus"         = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
   }
 }
 
