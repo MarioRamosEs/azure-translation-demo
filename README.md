@@ -55,11 +55,11 @@ AZURE-TRANSLATION-DEMO
 ├── src
 │   ├── AzureTranslation.Api             // ASP.NET Core Web API
 │   ├── AzureTranslation.AppHost         // Application bootstrap/hosting (Aspire)
-│   ├── AzureTranslation.Common          // Common utilities
+│   ├── AzureTranslation.Common          // Common models and utilities
 │   ├── AzureTranslation.Core            // Core application logic
 │   ├── AzureTranslation.Function        // Azure Function for async translation
-│   ├── AzureTranslation.Infrastructure  // Infrastructure abstractions
-│   └── AzureTranslation.ServiceDefaults // Default service settings
+│   ├── AzureTranslation.Infrastructure  // Infrastructure implementations
+│   └── AzureTranslation.ServiceDefaults // Default Aspire service settings
 ├── AzureTranslation.sln
 ├── Directory.Build.props
 ├── Directory.Build.targets
