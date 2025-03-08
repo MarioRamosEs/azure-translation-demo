@@ -29,7 +29,7 @@ internal sealed class TranslationService : ITranslationService
     }
 
     /// <inheritdoc />
-    public async Task<string> CreateTranslationRequestAsync(string text, CancellationToken cancellationToken)
+    public async Task<Translation> CreateTranslationRequestAsync(string text, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating translation request for text");
 
@@ -46,7 +46,7 @@ internal sealed class TranslationService : ITranslationService
 
         logger.LogInformation("Translation request created with ID: {TranslationId}", translation.Id);
 
-        return translation.Id;
+        return translation;
     }
 
     /// <inheritdoc />

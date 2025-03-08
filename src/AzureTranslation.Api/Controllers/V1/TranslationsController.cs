@@ -45,23 +45,20 @@ public class TranslationsController : ControllerBase
     /// <response code="400">If the request is invalid or fails validation.</response>
     /// <response code="500">If an unexpected error occurs during processing.</response>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(NewTranslationResponse))]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(Translation))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateTranslationRequest([Required] NewTranslationRequest request, CancellationToken cancellationToken)
     {
         try
         {
-            var translationId = await translationService.CreateTranslationRequestAsync(request.OriginalText, cancellationToken);
+            var translation = await translationService.CreateTranslationRequestAsync(request.OriginalText, cancellationToken);
 
             return AcceptedAtAction(
                 actionName: nameof(GetTranslation),
                 controllerName: "Translations",
-                routeValues: new { translationId },
-                value: new NewTranslationResponse
-                {
-                    TranslationId = translationId,
-                });
+                routeValues: new { translationId = translation.Id },
+                value: translation);
         }
         catch (Exception ex)
         {
