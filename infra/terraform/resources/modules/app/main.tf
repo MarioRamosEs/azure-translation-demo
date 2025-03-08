@@ -7,6 +7,12 @@ resource "azurerm_linux_web_app" "app" {
   app_settings        = var.app_settings
   tags                = var.tags
 
+  connection_string {
+    name  = "AppConfig"
+    type  = "Custom"
+    value = var.app_configuration_connection_string
+  }
+
   site_config {
     always_on  = var.always_on
     ftps_state = var.ftps_state

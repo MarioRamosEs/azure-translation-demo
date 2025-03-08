@@ -202,25 +202,25 @@ module "asp" {
 }
 
 module "app" {
-  source               = "./modules/app"
-  name                 = "app-azure-translation-2-${var.suffix}"
-  location             = var.location
-  resource_group_name  = azurerm_resource_group.rg.name
-  app_service_plan_id  = module.asp.id
-  app_command_line     = "dotnet AzureTranslation.API.dll"
-  https_only           = true
-  ftps_state           = "Disabled"
-  identity_type        = "UserAssigned"
-  identity_ids         = [module.mi.id]
-  app_configuration_id = module.appcs.id
-  tags                 = local.tags
+  source                              = "./modules/app"
+  name                                = "app-azure-translation-2-${var.suffix}"
+  location                            = var.location
+  resource_group_name                 = azurerm_resource_group.rg.name
+  app_service_plan_id                 = module.asp.id
+  app_command_line                    = "dotnet AzureTranslation.API.dll"
+  https_only                          = true
+  ftps_state                          = "Disabled"
+  identity_type                       = "UserAssigned"
+  identity_ids                        = [module.mi.id]
+  app_configuration_connection_string = module.appcs.primary_read_key_connection_string
+  tags                                = local.tags
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY"        = module.appi.instrumentation_key
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = module.appi.connection_string
     "WEBSITE_RUN_FROM_PACKAGE"              = 1
     "AZURE_CLIENT_ID"                       = module.mi.client_id
 
-    "ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
+    //"ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
   }
 }
 
@@ -244,11 +244,9 @@ module "func" {
     "FUNCTIONS_EXTENSION_VERSION"           = "~4"
     "FUNCTIONS_WORKER_RUNTIME"              = "dotnet-isolated"
 
-    "ConnectionStrings__AppConfig"          = module.appcs.primary_read_key_connection_string
-    "AzureWebJobsStorage"                   = module.st.connection_string
-    "ServiceBusOptions__QueueName"          = azurerm_servicebus_queue.servicebus_queue.name
-    "ConnectionStrings__ServiceBus"         = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
+    "ConnectionStrings__AppConfig"  = module.appcs.primary_read_key_connection_string
+    "AzureWebJobsStorage"           = module.st.connection_string
+    "ServiceBusOptions__QueueName"  = azurerm_servicebus_queue.servicebus_queue.name
+    "ConnectionStrings__ServiceBus" = azurerm_servicebus_namespace.servicebus.default_primary_connection_string
   }
 }
-
-

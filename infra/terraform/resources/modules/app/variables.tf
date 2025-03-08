@@ -54,14 +54,15 @@ variable "identity_ids" {
   default     = []
 }
 
-variable "app_configuration_id" {
-  type        = string
-  description = "The ID of the App Configuration"
-}
-
 variable "app_command_line" {
   type        = string
   description = "The app command line to launch"
+  nullable    = false
+}
+
+variable "app_configuration_connection_string" {
+  type        = string
+  description = "The connection string for the App Configuration"
   nullable    = false
 }
 
