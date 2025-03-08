@@ -50,7 +50,7 @@ public static class IServiceCollectionExtensions
             builder.AddServiceBusClient(configuration.GetConnectionString("ServiceBus"));
         });
 
-        services.AddScoped<IMessageBusService, AzureServiceBusService>();
+        services.AddSingleton<IMessageBusService, AzureServiceBusService>();
 
         return services;
     }
@@ -62,7 +62,7 @@ public static class IServiceCollectionExtensions
     /// <returns>The service collection to enable method chaining.</returns>
     public static IServiceCollection AddTableStorageTranslationRepository(this IServiceCollection services)
     {
-        return services.AddScoped<ITranslationRepository, TableStorageTranslationRepository>();
+        return services.AddSingleton<ITranslationRepository, TableStorageTranslationRepository>();
     }
 
     /// <summary>
@@ -91,8 +91,8 @@ public static class IServiceCollectionExtensions
             builder.AddTextAnalyticsClient(new Uri(languageOptions.Endpoint), new AzureKeyCredential(languageOptions.Key));
         });
 
-        services.AddScoped<ILanguageDetectionService, CognitiveServicesLanguageDetector>();
-        services.AddScoped<ITextTranslationService, CognitiveServicesTranslator>();
+        services.AddSingleton<ILanguageDetectionService, CognitiveServicesLanguageDetector>();
+        services.AddSingleton<ITextTranslationService, CognitiveServicesTranslator>();
 
         return services;
     }

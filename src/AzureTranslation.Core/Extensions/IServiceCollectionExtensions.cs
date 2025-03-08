@@ -11,22 +11,22 @@ namespace AzureTranslation.Core.Extensions;
 public static class IServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds the translation request service to the service collection.
+    /// Implements <see cref="ITranslationRequestService"/> to handle translation requests.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <returns>The service collection to enable method chaining.</returns>
     public static IServiceCollection AddTranslationRequestService(this IServiceCollection services)
     {
-        return services.AddScoped<ITranslationRequestService, TranslationRequestService>();
+        return services.AddSingleton<ITranslationRequestService, TranslationRequestService>();
     }
 
     /// <summary>
-    /// Adds translation processing services to the service collection.
+    /// Implements <see cref="ITranslationProcessor"/> to handle translation processing.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <returns>The service collection to enable method chaining.</returns>
     public static IServiceCollection AddTranslationProcessingServices(this IServiceCollection services)
     {
-        return services.AddScoped<ITranslationProcessor, TranslationProcessor>();
+        return services.AddSingleton<ITranslationProcessor, TranslationProcessor>();
     }
 }
