@@ -12,5 +12,5 @@ public sealed class ServiceBusOptions
     /// </summary>
     [Required]
     [MinLength(1)]
-    public string QueueName { get; init; }
+    public required string QueueName { get; init; }
 }

@@ -8,6 +8,7 @@ using AzureTranslation.Infrastructure.Services;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AzureTranslation.Infrastructure.Extensions;
 
@@ -72,23 +73,22 @@ public static class IServiceCollectionExtensions
     /// <returns>The service collection to enable method chaining.</returns>
     public static IServiceCollection AddAzureCognitiveLanguageServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var translatorApiKey = configuration.GetValue<string>("TranslatorOptions:Key");
-        if (string.IsNullOrWhiteSpace(translatorApiKey))
-        {
-            throw new InvalidOperationException("The TranslatorOptions:Key configuration value is missing.");
-        }
+        services.AddOptionsWithValidateOnStart<TranslatorOptions>()
+            .Bind(configuration.GetSection(nameof(TranslatorOptions)))
+            .ValidateDataAnnotations();
 
-        var languageApiKey = configuration.GetValue<string>("LanguageOptions:Key");
-        if (string.IsNullOrWhiteSpace(languageApiKey))
-        {
-            throw new InvalidOperationException("The LanguageOptions:Key configuration value is missing.");
-        }
+        services.AddOptionsWithValidateOnStart<LanguageOptions>()
+            .Bind(configuration.GetSection(nameof(LanguageOptions)))
+            .ValidateDataAnnotations();
+
+        var translatorOptions = configuration.GetSection(nameof(TranslatorOptions)).Get<TranslatorOptions>()!;
+        var languageOptions = configuration.GetSection(nameof(LanguageOptions)).Get<LanguageOptions>()!;
 
         services.AddAzureClients(builder =>
         {
-            builder.AddTextTranslationClient(new AzureKeyCredential(translatorApiKey), "francecentral"); // TODO load from configuration
+            builder.AddTextTranslationClient(new AzureKeyCredential(translatorOptions.Key), translatorOptions.Region);
 
-            builder.AddTextAnalyticsClient(new Uri("https://francecentral.api.cognitive.microsoft.com/"), new AzureKeyCredential(languageApiKey)); // TODO load from configuration
+            builder.AddTextAnalyticsClient(new Uri(languageOptions.Endpoint), new AzureKeyCredential(languageOptions.Key));
         });
 
         services.AddScoped<ILanguageDetectionService, CognitiveServicesLanguageDetector>();

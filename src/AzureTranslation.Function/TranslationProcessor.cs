@@ -37,7 +37,7 @@ public class TranslationProcessor
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Function(nameof(TranslationProcessor))]
     public async Task Run(
-        [ServiceBusTrigger("sbq-translation-requests-mr", Connection = "ServiceBus")] // TODO: Set queue name by configuration
+        [ServiceBusTrigger("sbq-translation-requests", Connection = "ServiceBus")] // TODO: Set queue name by configuration
         ServiceBusReceivedMessage message,
         ServiceBusMessageActions messageActions,
         CancellationToken cancellationToken)

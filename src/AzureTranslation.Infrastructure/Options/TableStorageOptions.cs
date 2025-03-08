@@ -12,5 +12,5 @@ public sealed class TableStorageOptions
     /// </summary>
     [Required]
     [MinLength(1)]
-    public string TranslationsTableName { get; init; }
+    public required string TranslationsTableName { get; init; }
 }

@@ -3,25 +3,14 @@ data "azurerm_client_config" "current" {}
 data "azurerm_subscription" "current" {}
 
 locals {
-  name_app_insights            = "${var.app_insights_name}-${var.suffix}"
-  name_appcs                   = "${var.appcs_name}-${var.suffix}"
-  name_kv                      = "${var.kv_name}-${var.suffix}"
-  name_log_analytics_workspace = "${var.log_analytics_workspace_name}-${var.suffix}"
-  name_resource_group          = "${var.resource_group_name}-${var.suffix}"
-  name_manage_identity         = "${var.managed_identity_name}-${var.suffix}"
-  name_storage_account         = "${var.storage_account_name}${var.suffix}"
-  name_servicebus_namespace    = "sbns-azure-translation-${var.suffix}"   // TODO refactor
-  name_servicebus_queue        = "sbq-translation-requests-${var.suffix}" // TODO refactor ,  we dont need the sufix here
-
   tags = merge(var.tags, {
     createdAt   = "${formatdate("YYYY-MM-DD hh:mm:ss", timestamp())} UTC"
     createdWith = "Terraform"
-    suffix      = var.suffix
   })
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = local.name_resource_group
+  name     = "rg-azure-translation-${var.suffix}"
   location = var.location
   tags     = local.tags
 
@@ -34,15 +23,15 @@ resource "azurerm_resource_group" "rg" {
 
 module "mi" {
   source              = "./modules/mi"
+  name                = "id-azure-translation-${var.suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  name                = local.name_manage_identity
   tags                = local.tags
 }
 
 module "log" {
   source              = "./modules/log"
-  name                = local.name_log_analytics_workspace
+  name                = "log-azure-translation-${var.suffix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = local.tags
@@ -50,7 +39,7 @@ module "log" {
 
 module "appi" {
   source                     = "./modules/appi"
-  name                       = local.name_app_insights
+  name                       = "appi-azure-translation-${var.suffix}"
   location                   = var.location
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = module.log.id
@@ -59,9 +48,9 @@ module "appi" {
 
 module "st" {
   source                   = "./modules/st"
+  name                     = "staztranslation${var.suffix}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = var.location
-  name                     = local.name_storage_account
   account_tier             = var.storage_account_tier
   account_replication_type = var.storage_account_replication_type
   identity_id              = module.mi.id
@@ -70,12 +59,12 @@ module "st" {
 
 resource "azurerm_storage_table" "translations" {
   name                 = var.translations_table_name
-  storage_account_name = local.name_storage_account
+  storage_account_name = module.st.name
 }
 
 // TODO Refactor in a module
 resource "azurerm_servicebus_namespace" "servicebus" {
-  name                = local.name_servicebus_namespace
+  name                = "sbns-azure-translation-${var.suffix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "Basic"
@@ -89,9 +78,9 @@ resource "azurerm_servicebus_namespace" "servicebus" {
 }
 
 resource "azurerm_servicebus_queue" "servicebus_queue" {
-  name          = local.name_servicebus_queue
+  name          = "sbq-translation-requests"
   namespace_id  = azurerm_servicebus_namespace.servicebus.id
-  lock_duration = "PT5M" # 5 minutos de duración de bloqueo // TODO put in variables
+  lock_duration = "PT5M"
 }
 
 // TODO Refactor in a module
@@ -127,9 +116,9 @@ resource "azurerm_cognitive_account" "language" {
 
 module "kv" {
   source                     = "./modules/kv"
+  name                       = "kv-azure-translation-${var.suffix}"
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
-  name                       = local.name_kv
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   principal_id               = module.mi.principal_id
   soft_delete_retention_days = var.kv_soft_delete_retention_days
@@ -156,18 +145,14 @@ module "kv" {
       name  = "LanguageOptions:Key"
       value = azurerm_cognitive_account.language.primary_access_key
     },
-    # {
-    #   name  = "TranslatorOptions:Endpoint"
-    #   value = azurerm_cognitive_account.translation.endpoint
-    # }
   ]
 }
 
 module "appcs" {
   source                       = "./modules/appcs"
+  name                         = "appcs-azure-translation-${var.suffix}"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = var.location
-  name                         = local.name_appcs
   sku                          = var.appcs_sku
   local_authentication_enabled = var.appcs_local_authentication_enabled
   public_network_access        = var.appcs_public_network_access
@@ -193,11 +178,16 @@ module "appcs" {
         key   = "TableStorageOptions:TranslationsTableName"
         value = var.translations_table_name
       },
-      # {
-      #   label = var.appcs_label
-      #   key   = "TranslatorOptions:Region"
-      #   value = var.location
-      # },
+      {
+        label = var.appcs_label
+        key   = "TranslatorOptions:Region"
+        value = azurerm_cognitive_account.translation.location
+      },
+      {
+        label = var.appcs_label
+        key   = "LanguageOptions:Endpoint"
+        value = azurerm_cognitive_account.language.endpoint
+      }
   ])
 }
 

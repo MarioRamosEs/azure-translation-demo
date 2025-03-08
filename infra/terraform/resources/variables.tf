@@ -33,34 +33,7 @@ variable "tags" {
   }
 }
 
-/* RESOURCE GROUP */
-
-variable "resource_group_name" {
-  description = "(Required) The name of the resource group."
-  type        = string
-  nullable    = false
-  default     = "rg-azure-translation"
-}
-
-## ---- SPECIFIC RESOURCES & SERVICES ---- ##
-
-/* MANAGED IDENTITY */
-
-variable "managed_identity_name" {
-  description = "(Required) Specifies the name of the Managed Identity."
-  type        = string
-  nullable    = false
-  default     = "id-azure-translation"
-}
-
 /* APP CONFIGURATION */
-
-variable "appcs_name" {
-  description = "(Required) Specifies the name of the Azure App Configuration."
-  type        = string
-  nullable    = false
-  default     = "appcs-azure-translation"
-}
 
 variable "appcs_sku" {
   description = "(Required) Specifies the SKU of the Azure App Configuration. Possible values are `free` and `standard`. Defaults to `standard`."
@@ -112,23 +85,7 @@ variable "appcs_label" {
   default     = null
 }
 
-/* APPLICATION INSIHGTS */
-
-variable "app_insights_name" {
-  description = "(Required) Specifies the name of the Application Insights."
-  type        = string
-  nullable    = false
-  default     = "appi-azure-translation"
-}
-
 /* STORAGE ACCOUNT */
-
-variable "storage_account_name" {
-  description = "(Required) Specifies the name of the Azure Virtual Network."
-  type        = string
-  nullable    = false
-  default     = "staztranslation"
-}
 
 variable "storage_account_tier" {
   description = "(Required) Defines the Tier to use for this storage account. Valid options are `Standard` and `Premium`. Changing this forces a new resource to be created. Defaults to `Standard`."
@@ -156,13 +113,6 @@ variable "storage_account_replication_type" {
 
 /* KEY VAULT */
 
-variable "kv_name" {
-  description = "(Required) Specifies the name of the Key Vault."
-  type        = string
-  nullable    = false
-  default     = "kv-azure-translation"
-}
-
 variable "kv_soft_delete_retention_days" {
   description = "(Optional) The number of days that items should be retained for once soft-deleted. This value can be between 7 and 90 (the default) days. Default is 7 days."
   type        = number
@@ -178,22 +128,13 @@ variable "kv_soft_delete_retention_days" {
 variable "kv_sku" {
   description = "(Required) The SKU name of the Key Vault. Possible values are `Standard` and `Premium`. Default is `Standard`."
   type        = string
-  nullable    = true
+  nullable    = false
   default     = "Standard"
 
   validation {
     condition     = var.kv_sku == "Standard" || var.kv_sku == "Premium"
     error_message = "The SKU name of the Key Vault must be either `Standard` or `Premium`."
   }
-}
-
-/* LOG ANALYTICS WORKSPACE */
-
-variable "log_analytics_workspace_name" {
-  description = "(Required) Specifies the name of the Log Analytics Workspace."
-  type        = string
-  nullable    = false
-  default     = "log-azure-translation"
 }
 
 /* STORAGE TABLE */
