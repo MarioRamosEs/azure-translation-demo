@@ -1,4 +1,5 @@
-﻿using AzureTranslation.Core.Entities;
+﻿using AzureTranslation.Common.Models;
+using AzureTranslation.Core.Entities;
 
 namespace AzureTranslation.Core.Interfaces;
 

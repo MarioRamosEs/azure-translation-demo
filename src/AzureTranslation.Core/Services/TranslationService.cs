@@ -34,22 +34,20 @@ internal sealed class TranslationService : ITranslationService
     {
         logger.LogInformation("Creating translation request for text");
 
-        var translationId = Guid.NewGuid().ToString();
-
-        var translationEntity = new TranslationEntity
+        var translation = new Translation
         {
-            RowKey = translationId,
+            Id = Guid.NewGuid().ToString(),
             OriginalText = text,
             Status = TranslationStatus.Pending,
             CreatedAt = DateTime.UtcNow,
         };
 
-        await translationRepository.CreateTranslationAsync(translationEntity, cancellationToken);
-        await messageBusService.SendTranslationMessageAsync(translationId, cancellationToken);
+        await translationRepository.CreateTranslationAsync(TranslationEntity.FromTranslation(translation), cancellationToken);
+        await messageBusService.SendTranslationMessageAsync(translation.Id, cancellationToken);
 
-        logger.LogInformation("Translation request created with ID: {TranslationId}", translationId);
+        logger.LogInformation("Translation request created with ID: {TranslationId}", translation.Id);
 
-        return translationId;
+        return translation.Id;
     }
 
     /// <inheritdoc />
@@ -65,17 +63,7 @@ internal sealed class TranslationService : ITranslationService
             return null;
         }
 
-        return new Translation
-        {
-            Id = entity.RowKey,
-            OriginalText = entity.OriginalText,
-            TranslatedText = entity.TranslatedText,
-            DetectedLanguage = entity.DetectedLanguage,
-            Status = entity.Status,
-            ErrorMessage = entity.ErrorMessage,
-            CreatedAt = entity.CreatedAt,
-            CompletedAt = entity.CompletedAt,
-        };
+        return entity.ToTranslation();
     }
 
     /// <inheritdoc />
